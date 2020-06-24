@@ -25,7 +25,7 @@ if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
 
-# Static root for static files like img, html, ..etc
+# Static root for static files like img, html, css ..etc
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
@@ -102,7 +102,7 @@ DATABASES = {
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
-# Rest Framework
+# Rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
