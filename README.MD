@@ -21,6 +21,18 @@ DATABASE_URL=postgres://trungpt:0812@localhost:5432/django_quickstart
 ```
 
 # Fix Errors
+MacOS (*unix systems): pygraphiz path error  
 ```console
 $ pip install --install-option="--include-path=/usr/local/include/" --install-option="--library-path=/usr/local/lib/" pygraphviz
+```
+  
+Static files error when deploy heroku: [source](https://stackoverflow.com/questions/36665889/collectstatic-error-while-deploying-django-app-to-heroku)
+```console
+$ heroku config:set DISABLE_COLLECTSTATIC=1
+$ git push heroku master
+$ heroku run python manage.py makemigration
+$ heroku run python manage.py migrate
+$ heroku run python manage.py collectstatic --noinput
+$ heroku config:unset DISABLE_COLLECTSTATIC
+$ heroku run python manage.py collectstatic
 ```
