@@ -12,5 +12,10 @@
 
 # Run Server locally
 ```console
-~$ python manage.py runserver
+~$ python manage.py runserver  
+```
+
+# File '.env.dev'
+```text
+DATABASE_URL=postgres://trungpt:0812@localhost:5432/django_quickstart  
 ```
