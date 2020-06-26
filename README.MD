@@ -21,7 +21,7 @@ DATABASE_URL=postgres://trungpt:0812@localhost:5432/django_quickstart
 ```
 
 # Fix Errors
-MacOS (*unix systems): pygraphiz path error  
+MacOS (*unix systems): pygraphviz path error  
 ```console
 $ pip install --install-option="--include-path=/usr/local/include/" --install-option="--library-path=/usr/local/lib/" pygraphviz
 ```

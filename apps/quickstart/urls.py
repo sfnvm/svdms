@@ -8,18 +8,18 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from apps.quickstart.views import (
-    Ping,
     UserViewSet,
-    GroupViewSet
+    GroupViewSet,
+    AgencyViewSet
 )
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="DMS Nam Phat API",
         default_version='v1',
-        description="Test description",
+        description="DMS Nam Phat API docs",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
+        contact=openapi.Contact(email="trungpt.dev@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
@@ -29,15 +29,23 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
+router.register(r'agencies', AgencyViewSet)
 
 urlpatterns = [
+    # Swagger endpoints
     url(r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger',
-                                           cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', schema_view.with_ui('redoc',
-                                         cache_timeout=0), name='schema-redoc'),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('', include(router.urls)),
-    path('ping/', Ping.as_view(), name="ping")
+        schema_view.without_ui(cache_timeout=0),
+        name='schema-json'),
+    url(r'^swagger/$',
+        schema_view.with_ui('swagger', cache_timeout=0),
+        name='schema-swagger-ui'),
+    url(r'^redoc/$',
+        schema_view.with_ui('redoc', cache_timeout=0),
+        name='schema-redoc'),
+    # Get token
+    path('api-auth-token/', obtain_auth_token, name='api_token_auth'),
+    #OTP
+    path('', include('drfpasswordless.urls')),
+    # API endpoints
+    path('', include(router.urls))
 ]
