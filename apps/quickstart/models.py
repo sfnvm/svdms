@@ -1,5 +1,14 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
+    code = models.CharField(max_length=32, unique=True, blank=True)
+    address = models.CharField(max_length=256, blank=True)
+    phone_number = models.CharField(max_length=16, blank=True)
+    gender = models.BooleanField(default=True)
 
 
 class Agency(models.Model):
@@ -44,7 +53,7 @@ class ProductType(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
     )
     code = models.CharField(max_length=32, unique=True, blank=True)
-    name = models.CharField(max_length=128, unique=True, blank=True)
+    product_type = models.CharField(max_length=128, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     removed = models.BooleanField(default=False)
 
@@ -66,7 +75,7 @@ class Product(models.Model):
     weight = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
-    # price = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    base_price = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     origin = models.CharField(max_length=256, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     removed = models.BooleanField(default=False)

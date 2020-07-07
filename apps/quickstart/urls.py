@@ -43,9 +43,11 @@ urlpatterns = [
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
     # Get token
-    path('api-auth-token/', obtain_auth_token, name='api_token_auth'),
-    #OTP
+    path(r'auth/', obtain_auth_token, name='api_token'),
+    # OTP
     path('', include('drfpasswordless.urls')),
     # API endpoints
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    # User
+    # url(r'users/', UserViewSet.as_view(), name='user'),
 ]
