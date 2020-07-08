@@ -17,7 +17,12 @@ from apps.quickstart.models import (
 from apps.quickstart.serializers import (
     UserSerializer,
     GroupSerializer,
-    AgencySerializer
+    AgencySerializer,
+    ProductSerializer,
+    ProductTypeSerializer,
+    MasterProductPriceSerializer,
+    OrderSerializer,
+    StorageSerializer
 )
 
 
@@ -26,7 +31,7 @@ from apps.quickstart.serializers import (
 #####################
 
 class UserViewSet(ModelViewSet):
-    ### TEST API VIEWSET
+    # TEST API VIEWSET
     # def get(self, request, format=None):
     #     user_count = User.objects.filter(is_active=True).count()
     #     content = {'user_count': user_count}
@@ -59,24 +64,24 @@ class AgencyViewSet(ModelViewSet):
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = AgencySerializer
+    serializer_class = ProductSerializer
 
 
 class ProductTypeViewSet(ModelViewSet):
     queryset = ProductType.objects.all()
-    serializer_class = AgencySerializer
+    serializer_class = ProductTypeSerializer
 
 
 class MasterProductPriceViewSet(ModelViewSet):
     queryset = MasterProductPrice.objects.all()
-    serializer_class = AgencySerializer
+    serializer_class = MasterProductPriceSerializer
 
 
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
-    serializer_class = AgencySerializer
+    serializer_class = OrderSerializer
 
 
 class StorageViewSet(ModelViewSet):
     queryset = Storage.objects.all()
-    serializer_class = AgencySerializer
+    serializer_class = StorageSerializer

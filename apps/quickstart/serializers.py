@@ -10,46 +10,62 @@ from apps.quickstart.models import (
     ProductType,
     ProductUnitType,
     Product,
+    ProductType,
+    MasterProductPrice,
+    Order,
+    Storage
 )
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'url', 'username', 'email', 'first_name', 'last_name', 'groups']
+        fields = '__all__'
 
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
-        instance.first_name = validated_data('first_name', instance.first_name)
-        instance.last_name = validated_data('last_name', instance.last_name)
-        instance.groups = validated_data('groups', instance.groups)
-
-        instance.save()
-        return instance
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = []
-        
+        fields = '__all__'
+
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ['url', 'name']
+        fields = '__all__'
 
 
 class AgencySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Agency
-        fields = ['code', 'name', 'address', 'phone_number', 'created_at']
+        fields = '__all__'
+
+
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
 
 
 class ProductTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = ProductType,
-        fields = ['added_by', 'code', 'unit_type', 'removed']
+        model = ProductType
+        fields = '__all__'
+
+
+class MasterProductPriceSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = MasterProductPrice
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
+class StorageSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Storage
+        fields = '__all__'
