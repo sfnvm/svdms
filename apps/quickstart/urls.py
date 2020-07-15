@@ -10,6 +10,7 @@ from drf_yasg import openapi
 from apps.quickstart.views import (
     UserViewSet,
     GroupViewSet,
+    ProfileViewSet,
     AgencyViewSet,
     ProductViewSet,
     StorageViewSet,
@@ -32,6 +33,7 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
+router.register(r'profiles', ProfileViewSet)
 router.register(r'agencies', AgencyViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'storages', StorageViewSet)
@@ -52,7 +54,7 @@ urlpatterns = [
     path(r'auth/', obtain_auth_token, name='api_token'),
     # OTP
     path('', include('drfpasswordless.urls')),
-    # API endpoints
+    # API endpoints with Router
     path('', include(router.urls)),
     # Grant permission
     #

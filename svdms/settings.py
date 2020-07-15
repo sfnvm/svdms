@@ -129,16 +129,16 @@ REST_FRAMEWORK = {
 
 # Dummy development SMTP server (test only)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
+EMAIL_FILE_PATH = '/tmp/app-messages'  # change this to a proper location
 
 # Passwordless OTP
 PASSWORDLESS_AUTH = {
-   # Allowed auth types, can be EMAIL, MOBILE, or both.
+    # Allowed auth types, can be EMAIL, MOBILE, or both.
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
 
     # URL Prefix for Authentication Endpoints
     'PASSWORDLESS_AUTH_PREFIX': 'otp/',
-    
+
     #  URL Prefix for Verification Endpoints
     'PASSWORDLESS_VERIFY_PREFIX': 'otp/verify/',
 
@@ -209,7 +209,7 @@ PASSWORDLESS_AUTH = {
     # the token itself, the second is a boolean value representating whether
     # the token was newly created.
     'PASSWORDLESS_AUTH_TOKEN_CREATOR': 'drfpasswordless.utils.create_authentication_token',
-    
+
     # What function is called to construct a serializer for drf tokens when
     # exchanging a passwordless token for a real user auth token.
     'PASSWORDLESS_AUTH_TOKEN_SERIALIZER': 'drfpasswordless.serializers.TokenResponseSerializer'

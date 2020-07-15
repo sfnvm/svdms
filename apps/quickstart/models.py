@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 
 
 class Profile(models.Model):
@@ -10,13 +12,34 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=16, blank=True)
     gender = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.code
+
+
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+
+
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
+
+
+# @receiver(pre_delete, sender=User)
+# def delete_profile_for_user(sender, instance=None, **kwargs):
+#     if instance:
+#         user_profile = Profile.objects.get(user=instance)
+#         user_profile.delete()
+
 
 class Agency(models.Model):
     class Meta:
         db_table = 'quickstart_agency'
 
     added_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True
     )
     code = models.CharField(max_length=32, blank=True)
     name = models.CharField(max_length=128, blank=True)

@@ -17,16 +17,39 @@ from apps.quickstart.models import (
 )
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
+        exclude = ['user']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
         fields = '__all__'
+        # read_only_fields = ('created_at', 'updated_at')
+        depth = 1
+        # exclude = ['password']
+
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile')
+        user = User.objects.create(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+
+        Profile.objects.create(user=user, **profile_data)
+        return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+        user = super().update(instance, validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+
+        Profile.objects.filter(user=user).update(**profile_data)
+        return user
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

@@ -6,6 +6,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from apps.quickstart.models import (
+    Profile,
     Agency,
     Product,
     ProductType,
@@ -17,6 +18,7 @@ from apps.quickstart.models import (
 from apps.quickstart.serializers import (
     UserSerializer,
     GroupSerializer,
+    ProfileSerializer,
     AgencySerializer,
     ProductSerializer,
     ProductTypeSerializer,
@@ -31,21 +33,18 @@ from apps.quickstart.serializers import (
 #####################
 
 class UserViewSet(ModelViewSet):
-    # TEST API VIEWSET
-    # def get(self, request, format=None):
-    #     user_count = User.objects.filter(is_active=True).count()
-    #     content = {'user_count': user_count}
-    #     return Response({
-    #         'details': 'Thành công',
-    #         'result': content
-    #     })
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
 
 class GroupViewSet(ModelViewSet):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
+
+
+class ProfileViewSet(ModelViewSet):
+    queryset = Profile.objects.all().order_by('id')
+    serializer_class = ProfileSerializer
 
 
 ###############
@@ -58,30 +57,30 @@ class GroupViewSet(ModelViewSet):
 ###########################
 
 class AgencyViewSet(ModelViewSet):
-    queryset = Agency.objects.all()
+    queryset = Agency.objects.all().order_by('id')
     serializer_class = AgencySerializer
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('id')
     serializer_class = ProductSerializer
 
 
 class ProductTypeViewSet(ModelViewSet):
-    queryset = ProductType.objects.all()
+    queryset = ProductType.objects.all().order_by('id')
     serializer_class = ProductTypeSerializer
 
 
 class MasterProductPriceViewSet(ModelViewSet):
-    queryset = MasterProductPrice.objects.all()
+    queryset = MasterProductPrice.objects.all().order_by('id')
     serializer_class = MasterProductPriceSerializer
 
 
 class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('id')
     serializer_class = OrderSerializer
 
 
 class StorageViewSet(ModelViewSet):
-    queryset = Storage.objects.all()
+    queryset = Storage.objects.all().order_by('id')
     serializer_class = StorageSerializer
