@@ -1,6 +1,7 @@
 from django.contrib.auth.models import (
     User,
-    Group
+    Group,
+    Permission
 )
 from rest_framework import serializers
 
@@ -49,12 +50,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
 
         Profile.objects.filter(user=user).update(**profile_data)
+
         return user
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
+        fields = '__all__'
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
         fields = '__all__'
 
 

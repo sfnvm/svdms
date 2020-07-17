@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+
+from rest_framework.permissions import DjangoModelPermissions
 
 from apps.quickstart.models import (
     Profile,
@@ -18,6 +20,7 @@ from apps.quickstart.models import (
 from apps.quickstart.serializers import (
     UserSerializer,
     GroupSerializer,
+    PermissionSerializer,
     ProfileSerializer,
     AgencySerializer,
     ProductSerializer,
@@ -40,6 +43,10 @@ class UserViewSet(ModelViewSet):
 class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
+
+class PermissionViewSet(ModelViewSet):
+    queryset = Permission.objects.all().order_by('id')
+    serializer_class = PermissionSerializer
 
 
 class ProfileViewSet(ModelViewSet):
