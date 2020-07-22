@@ -71,7 +71,7 @@ Static files error when deploy heroku: [source](https://stackoverflow.com/questi
 ```console
 $ heroku config:set DISABLE_COLLECTSTATIC=1
 $ git push heroku master
-$ heroku run python manage.py makemigration
+$ heroku run python manage.py makemigrations
 $ heroku run python manage.py migrate
 $ heroku run python manage.py collectstatic --noinput
 $ heroku config:unset DISABLE_COLLECTSTATIC
