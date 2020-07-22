@@ -31,6 +31,7 @@ router.register(r'agencies', app_views.AgencyViewSet)
 router.register(r'products', app_views.ProductViewSet)
 router.register(r'storages', app_views.StorageViewSet)
 router.register(r'request-orders', app_views.RequestOrderViewSet)
+router.register(r'agreed-orders', app_views.AgreedOrderViewSet)
 
 urlpatterns = [
     # Swagger endpoints

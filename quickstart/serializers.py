@@ -1,13 +1,16 @@
-from quickstart import models as app_models
 from django.contrib.auth.models import (
     User,
     Group,
     Permission
 )
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+
+from quickstart import models as app_models
 
 
+#------------------#
+# USER AND PROFILE #
+#------------------#
 class ProfileSerializer(serializers.ModelSerializer):  # OK
     class Meta:
         model = app_models.Profile
@@ -49,27 +52,40 @@ class UserSerializer(serializers.ModelSerializer):  # OK
         return user
 
 
-# # OK // required admin permission please
+#-----------------------#
+# GROUP AND PERMISSIONS #
+#-----------------------#
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = '__all__'
-        read_only_fields = ('created_by', 'created_at',)
 
 
-# OK // required admin permission please
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = '__all__'
 
 
-class AgencySerializer(serializers.HyperlinkedModelSerializer):
+#--------#
+# AGENCY #
+#--------#
+class AgencySerializer(serializers.ModelSerializer):
+    created_by = serializers.StringRelatedField(
+        default=serializers.CurrentUserDefault(), read_only=True)
+    print(created_by)
+
+    def validate_user(self, value):
+        return self.context['request'].user
+
     class Meta:
         model = app_models.Agency
         fields = '__all__'
 
 
+#----------------------#
+# PRODUCTS AND PRICING #
+#----------------------#
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = app_models.Product
@@ -88,12 +104,24 @@ class MasterProductPriceSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+#----------------------#
+# ORDERS AND AGREEMENT #
+#----------------------#
 class RequestOrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = app_models.RequestOrder
         fields = '__all__'
 
 
+class AgreedOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.AgreedOrder
+        fields = '__all__'
+
+
+#---------#
+# STORAGE #
+#---------#
 class StorageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = app_models.Storage

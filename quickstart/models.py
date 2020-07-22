@@ -1,12 +1,15 @@
-from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_delete
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
+
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_delete
 
 
 class Profile(models.Model):
+    class Meta:
+        db_table = 'quickstart_profile'
+
     # auto fields
     user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
 
@@ -51,7 +54,7 @@ class Agency(models.Model):
 
     # Tài khoản chủ sỡ hữu đại lý // Chú ý role khi gán user
     user_related = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=False,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_owned_by"
     )
 
@@ -63,7 +66,7 @@ class Agency(models.Model):
     # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=False,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_removed_by"
     )
 
@@ -124,7 +127,7 @@ class Product(models.Model):
 
     # auto fields
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_created_by"
     )
     created_at = models.DateTimeField(auto_now_add=True)
