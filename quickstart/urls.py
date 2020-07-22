@@ -7,16 +7,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from apps.quickstart.views import (
-    UserViewSet,
-    GroupViewSet,
-    PermissionViewSet,
-    ProfileViewSet,
-    AgencyViewSet,
-    ProductViewSet,
-    StorageViewSet,
-    OrderViewSet
-)
+from quickstart import views as app_views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -32,14 +23,14 @@ schema_view = get_schema_view(
 )
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'groups', GroupViewSet)
-router.register(r'permissions', PermissionViewSet)
-router.register(r'profiles', ProfileViewSet)
-router.register(r'agencies', AgencyViewSet)
-router.register(r'products', ProductViewSet)
-router.register(r'storages', StorageViewSet)
-router.register(r'orders', OrderViewSet)
+router.register(r'users', app_views.UserViewSet)
+router.register(r'groups', app_views.GroupViewSet)
+router.register(r'permissions', app_views.PermissionViewSet)
+router.register(r'profiles', app_views.ProfileViewSet)
+router.register(r'agencies', app_views.AgencyViewSet)
+router.register(r'products', app_views.ProductViewSet)
+router.register(r'storages', app_views.StorageViewSet)
+router.register(r'request-orders', app_views.RequestOrderViewSet)
 
 urlpatterns = [
     # Swagger endpoints

@@ -4,20 +4,25 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework import permissions
+
+# Somewhat easy to use
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from rest_framework.permissions import DjangoModelPermissions
 
-from apps.quickstart.models import (
+from quickstart.models import (
     Profile,
     Agency,
     Product,
     ProductType,
     MasterProductPrice,
-    Order,
+    RequestOrder,
     Storage
 )
 
-from apps.quickstart.serializers import (
+from quickstart.serializers import (
     UserSerializer,
     GroupSerializer,
     PermissionSerializer,
@@ -26,9 +31,19 @@ from apps.quickstart.serializers import (
     ProductSerializer,
     ProductTypeSerializer,
     MasterProductPriceSerializer,
-    OrderSerializer,
+    RequestOrderSerializer,
     StorageSerializer
 )
+
+
+@api_view
+def check_token(request):
+    """
+    Check token
+    """
+    if request.method == 'POST':
+        content = {'details': 'Token is OK!'}
+        return Response(content)
 
 
 #####################
@@ -44,6 +59,7 @@ class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
 
+
 class PermissionViewSet(ModelViewSet):
     queryset = Permission.objects.all().order_by('id')
     serializer_class = PermissionSerializer
@@ -54,11 +70,6 @@ class ProfileViewSet(ModelViewSet):
     serializer_class = ProfileSerializer
 
 
-###############
-##### OTP #####
-###############
-
-
 ###########################
 ##### Other Endpoints #####
 ###########################
@@ -66,6 +77,7 @@ class ProfileViewSet(ModelViewSet):
 class AgencyViewSet(ModelViewSet):
     queryset = Agency.objects.all().order_by('id')
     serializer_class = AgencySerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 class ProductViewSet(ModelViewSet):
@@ -83,9 +95,9 @@ class MasterProductPriceViewSet(ModelViewSet):
     serializer_class = MasterProductPriceSerializer
 
 
-class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.all().order_by('id')
-    serializer_class = OrderSerializer
+class RequestOrderViewSet(ModelViewSet):
+    queryset = RequestOrder.objects.all().order_by('id')
+    serializer_class = RequestOrderSerializer
 
 
 class StorageViewSet(ModelViewSet):
