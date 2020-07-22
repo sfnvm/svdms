@@ -47,9 +47,12 @@ class UserSerializer(serializers.ModelSerializer):  # OK
         user.set_password(validated_data['password'])
         user.save()
 
-        Profile.objects.filter(user=user).update(**profile_data)
+        app_models.Profile.objects.filter(user=user).update(**profile_data)
 
         return user
+
+    def delete():
+        super.delete()
 
 
 #-----------------------#
