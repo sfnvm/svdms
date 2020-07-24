@@ -31,3 +31,6 @@ pygraphviz==1.5 --install-option="--include-path=/usr/local/include/" --install-
 
 # OTP 6 digits numb
 drfpasswordless==1.5.4
+
+# Django CORS header
+django-cors-headers==3.4.0

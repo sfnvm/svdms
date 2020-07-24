@@ -174,6 +174,7 @@ class MasterProductPrice(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     from_date = models.DateField(blank=True)
     to_date = models.DateField(blank=True)
+    removed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code
@@ -200,6 +201,8 @@ class RequestOrder(models.Model):
     # permission required
     rejected = models.BooleanField(default=False)
     rejected_at = models.DateTimeField(blank=True, null=True)
+
+    removed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code
@@ -237,6 +240,8 @@ class AgreedOrder(models.Model):
     # PERMISSION REQUIRED
     paid = models.BooleanField(default=False)
     paid_on = models.DateTimeField(blank=True, null=True)
+
+    removed = models.BooleanField(default=False)
 
 
 class RequestOrderProductDetails(models.Model):
@@ -276,6 +281,8 @@ class Storage(models.Model):
 
     code = models.CharField(max_length=32, unique=True, blank=True)
     address = models.CharField(max_length=256, blank=True)
+
+    removed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code

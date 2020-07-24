@@ -27,15 +27,15 @@ def check_token(request):
 
 
 class UserViewSet(ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all().order_by('-date_joined').filter(is_active=True)
     serializer_class = app_serializers.UserSerializer
-    permission_classes = [permissions.IsAdminUser, ]
+    # permission_classes = [permissions.IsAdminUser, ]
 
 
 class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all().order_by('id')
     serializer_class = app_serializers.GroupSerializer
-    permission_classes = [permissions.IsAdminUser, ]
+    # permission_classes = [permissions.IsAdminUser, ]
 
 
 class PermissionViewSet(ModelViewSet):
@@ -49,7 +49,7 @@ class ProfileViewSet(ModelViewSet):
 
 
 class AgencyViewSet(ModelViewSet):
-    queryset = app_models.Agency.objects.all().order_by('id')
+    queryset = app_models.Agency.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.AgencySerializer
 
     def perform_create(self, serializer):
@@ -64,30 +64,30 @@ class AgencyViewSet(ModelViewSet):
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = app_models.Product.objects.all().order_by('id')
+    queryset = app_models.Product.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.ProductSerializer
 
 
 class ProductTypeViewSet(ModelViewSet):
-    queryset = app_models.ProductType.objects.all().order_by('id')
+    queryset = app_models.ProductType.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.ProductTypeSerializer
 
 
 class MasterProductPriceViewSet(ModelViewSet):
-    queryset = app_models.MasterProductPrice.objects.all().order_by('id')
+    queryset = app_models.MasterProductPrice.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.MasterProductPriceSerializer
 
 
 class RequestOrderViewSet(ModelViewSet):
-    queryset = app_models.RequestOrder.objects.all().order_by('id')
+    queryset = app_models.RequestOrder.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.RequestOrderSerializer
 
 
 class AgreedOrderViewSet(ModelViewSet):
-    queryset = app_models.AgreedOrder.objects.all().order_by('id')
+    queryset = app_models.AgreedOrder.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.AgreedOrderSerializer
 
 
 class StorageViewSet(ModelViewSet):
-    queryset = app_models.Storage.objects.all().order_by('id')
+    queryset = app_models.Storage.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.StorageSerializer

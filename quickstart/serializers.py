@@ -51,9 +51,6 @@ class UserSerializer(serializers.ModelSerializer):  # OK
 
         return user
 
-    def delete():
-        super.delete()
-
 
 #-----------------------#
 # GROUP AND PERMISSIONS #
@@ -76,7 +73,6 @@ class PermissionSerializer(serializers.ModelSerializer):
 class AgencySerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField(
         default=serializers.CurrentUserDefault(), read_only=True)
-    print(created_by)
 
     def validate_user(self, value):
         return self.context['request'].user
