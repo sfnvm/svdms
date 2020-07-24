@@ -63,6 +63,23 @@ class Agency(models.Model):
     address = models.CharField(max_length=256, blank=True)
     phone_number = models.CharField(max_length=16, blank=True)
 
+    # Constants priority levels
+    EMERGENCY = 'EM'        # RP: < 1 hour
+    URGENT = 'UR'           # RP: 24 hours
+    STANDARD = 'ST'         # RP: 7 days
+    NORMAL = 'NO'           # RP: Agreed date
+    PRIORITY_CHOICES = (
+        (EMERGENCY, 'Emergency'),
+        (URGENT, 'Urgent'),
+        (STANDARD, 'Standard'),
+        (NORMAL, 'Normal')
+    )
+    priority_level = models.CharField(
+        max_length=2,
+        choices=PRIORITY_CHOICES,
+        default=NORMAL
+    )
+
     # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(

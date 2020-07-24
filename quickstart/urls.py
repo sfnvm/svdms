@@ -1,8 +1,11 @@
 from django.urls import path, include
 from django.conf.urls import url
+from django.contrib.auth.views import LoginView
+
 from rest_framework import routers
 from rest_framework import permissions
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -46,6 +49,8 @@ urlpatterns = [
         name='schema-redoc'),
     # Get token
     path(r'auth/', obtain_auth_token, name='api_token'),
+    # Session token
+    path(r'login/', LoginView.as_view(), name='login'),
     # OTP
     path('', include('drfpasswordless.urls')),
     # API endpoints with Router

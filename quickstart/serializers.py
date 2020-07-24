@@ -85,34 +85,50 @@ class AgencySerializer(serializers.ModelSerializer):
 #----------------------#
 # PRODUCTS AND PRICING #
 #----------------------#
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = app_models.Product
-        fields = '__all__'
-
-
-class ProductTypeSerializer(serializers.HyperlinkedModelSerializer):
+class ProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.ProductType
         fields = '__all__'
 
 
-class MasterProductPriceSerializer(serializers.HyperlinkedModelSerializer):
+class MasterProductPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.MasterProductPrice
+        fields = '__all__'
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.Product
         fields = '__all__'
 
 
 #----------------------#
 # ORDERS AND AGREEMENT #
 #----------------------#
-class RequestOrderSerializer(serializers.HyperlinkedModelSerializer):
+class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.RequestOrderProductDetails
+        fields = '__all__'
+
+
+class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.AgreedOrderProductDetails
+        fields = '__all__'
+
+
+class RequestOrderSerializer(serializers.ModelSerializer):
+    request_order_product_details = RequestOrderProductDetailsSerializer()
+
     class Meta:
         model = app_models.RequestOrder
         fields = '__all__'
 
 
 class AgreedOrderSerializer(serializers.ModelSerializer):
+    areed_order_product_details = AgreedOrderProductDetailsSerializer()
+
     class Meta:
         model = app_models.AgreedOrder
         fields = '__all__'
@@ -121,7 +137,13 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 #---------#
 # STORAGE #
 #---------#
-class StorageSerializer(serializers.HyperlinkedModelSerializer):
+class StorageProductDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.StorageProductDetails
+        fields = '__all__'
+
+
+class StorageSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.Storage
         fields = '__all__'
