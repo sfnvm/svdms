@@ -1,5 +1,4 @@
 from django.contrib.auth.models import (
-    User,
     Group,
     Permission
 )
@@ -47,7 +46,12 @@ class UserSerializer(serializers.ModelSerializer):  # OK
         user.set_password(validated_data['password'])
         user.save()
 
-        app_models.Profile.objects.filter(user=user).update(**profile_data)
+        profile_instance = app_models.Profile.objects.filter(user=user)
+
+        if(profile_instance):
+            profile_instance.update(**profile_data)
+        else:
+            app_models.Profile.objects.create(user=user, **profile_data)
 
         return user
 
@@ -91,13 +95,23 @@ class ProductTypeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductUnitTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = app_models.ProductUnitType
+        fields = '__all__'
+
+
 class MasterProductPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.MasterProductPrice
         fields = '__all__'
 
 
+# Need separate list vs create, update. This way ok by now
 class ProductSerializer(serializers.ModelSerializer):
+    # product_type = ProductTypeSerializer()
+    # product_unit_type = ProductUnitTypeSerializer()
+
     class Meta:
         model = app_models.Product
         fields = '__all__'

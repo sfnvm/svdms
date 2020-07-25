@@ -26,15 +26,21 @@ schema_view = get_schema_view(
 )
 
 router = routers.DefaultRouter()
+
 router.register(r'users', app_views.UserViewSet)
 router.register(r'groups', app_views.GroupViewSet)
 router.register(r'permissions', app_views.PermissionViewSet)
 router.register(r'profiles', app_views.ProfileViewSet)
+
 router.register(r'agencies', app_views.AgencyViewSet)
-router.register(r'products', app_views.ProductViewSet)
-router.register(r'storages', app_views.StorageViewSet)
 router.register(r'request-orders', app_views.RequestOrderViewSet)
 router.register(r'agreed-orders', app_views.AgreedOrderViewSet)
+
+router.register(r'products', app_views.ProductViewSet)
+router.register(r'product-types', app_views.ProductTypeViewSet)
+router.register(r'product-unit-types', app_views.ProductUnitPyteViewSet)
+
+router.register(r'storages', app_views.StorageViewSet)
 
 urlpatterns = [
     # Swagger endpoints
@@ -48,13 +54,15 @@ urlpatterns = [
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
     # Get token
-    path(r'auth/', obtain_auth_token, name='api_token'),
+    path(r'auth/', app_views.CustomObtainAuthToken.as_view(), name='api_token'),
     # Session token
     path(r'login/', LoginView.as_view(), name='login'),
     # OTP
     path('', include('drfpasswordless.urls')),
     # API endpoints with Router
     path('', include(router.urls)),
+    # Check authen
+    path('auth/check/', app_views.check_token, name='check_token'),
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)
