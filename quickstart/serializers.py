@@ -133,15 +133,43 @@ class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):
 
 
 class RequestOrderSerializer(serializers.ModelSerializer):
-    request_order_product_details = RequestOrderProductDetailsSerializer()
+    details = serializers.ListField(RequestOrderProductDetailsSerializer())
 
     class Meta:
         model = app_models.RequestOrder
         fields = '__all__'
 
+    def create(self, validated_data):
+        request_order_data = validated_data.pop('details')
+
+        request_order = app_models.RequestOrder.objects.create(
+            **validated_data)
+
+        for req_order in request_order_data:
+            app_models.RequestOrderProductDetails.objects.create(
+                request_oder, **req_order)
+
+        return request_order
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+
+        req = super().update(instance, validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+
+        profile_instance = app_models.Profile.objects.filter(user=user)
+
+        if(profile_instance):
+            profile_instance.update(**profile_data)
+        else:
+            app_models.Profile.objects.create(user=user, **profile_data)
+
+        return user
+
 
 class AgreedOrderSerializer(serializers.ModelSerializer):
-    areed_order_product_details = AgreedOrderProductDetailsSerializer()
+    details = AgreedOrderProductDetailsSerializer()
 
     class Meta:
         model = app_models.AgreedOrder

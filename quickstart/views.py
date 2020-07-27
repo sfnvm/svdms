@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import Group, Permission
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -35,6 +35,38 @@ def check_token(request):
 @api_view  # Get peronal information
 def get_current_profile(request):
     pass
+
+
+class LoginView(APIView):  # Session login
+    serializer_class = app_serializers.UserSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        username = request.data['username']
+        password = request.data['password']
+        remember = request.data['remember']
+
+        # logger.debug('Attempt authentication with %s : "%s"' %
+        #              (username, password,))
+        # Attempt authentication
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                # Care for the session
+                login(request, user)
+                # se the expiration to 0 if remember wasn't requested
+                if not remember:
+                    request.session.set_expiry(0)
+                # Return successful response
+                # logger.debug('Login successfully')
+                return Response(self.serializer_class(user).data)
+            else:
+                logger.warn('User %s is de-activated' % username)
+                return Response(status=status.HTTP_403_FORBIDDEN)
+        else:
+            logger.debug('Unauthorized access with %s : "%s"' %
+                        (username, password,))
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):

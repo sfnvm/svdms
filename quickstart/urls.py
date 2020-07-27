@@ -56,7 +56,8 @@ urlpatterns = [
     # Get token
     path(r'auth/', app_views.CustomObtainAuthToken.as_view(), name='api_token'),
     # Session token
-    path(r'login/', LoginView.as_view(), name='login'),
+    # path(r'login/', LoginView.as_view(), name='login'),
+    path(r'login/', app_views.LoginView.as_view(), name='login'),
     # OTP
     path('', include('drfpasswordless.urls')),
     # API endpoints with Router
