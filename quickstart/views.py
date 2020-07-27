@@ -34,7 +34,7 @@ def check_token(request):
     return Response(content)
 
 
-@api_view  # Get peronal information
+@api_view
 def get_current_profile(request):
     pass
 
