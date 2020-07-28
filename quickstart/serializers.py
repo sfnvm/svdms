@@ -78,8 +78,8 @@ class AgencySerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField(
         default=serializers.CurrentUserDefault(), read_only=True)
 
-    def validate_user(self, value):
-        return self.context['request'].user
+    # def validate_user(self, value):
+    #     return self.context['request'].user
 
     class Meta:
         model = app_models.Agency
@@ -123,7 +123,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.RequestOrderProductDetails
-        fields = '__all__'
+        exclude = ['request_order']
 
 
 class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):
@@ -133,13 +133,19 @@ class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):
 
 
 class RequestOrderSerializer(serializers.ModelSerializer):
-    details = serializers.ListField(RequestOrderProductDetailsSerializer())
+    created_by = serializers.StringRelatedField(
+        default=serializers.CurrentUserDefault(), read_only=True
+    )
+    agency = serializers.JSONField()
+    details = RequestOrderProductDetailsSerializer(many=True)
 
     class Meta:
         model = app_models.RequestOrder
         fields = '__all__'
+        depth = 1
 
     def create(self, validated_data):
+        agency_id = validated_data.pop('agency')
         request_order_data = validated_data.pop('details')
 
         request_order = app_models.RequestOrder.objects.create(

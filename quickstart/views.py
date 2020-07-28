@@ -185,6 +185,10 @@ class RequestOrderViewSet(ModelViewSet):
     queryset = app_models.RequestOrder.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.RequestOrderSerializer
 
+    def perform_create(self, serializer):
+        req = serializer.context['request']
+        serializer.save(created_by=req.user)
+
 
 class AgreedOrderViewSet(ModelViewSet):
     queryset = app_models.AgreedOrder.objects.all().order_by('id').filter(removed=False)

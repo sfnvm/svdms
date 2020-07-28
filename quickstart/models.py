@@ -261,7 +261,10 @@ class RequestOrderProductDetails(models.Model):
     # auto fields
     created_at = models.DateTimeField(auto_now_add=True)
 
-    request_order = models.ForeignKey(RequestOrder, on_delete=models.CASCADE)
+    request_order = models.ForeignKey(
+        RequestOrder, on_delete=models.CASCADE,
+        related_name="%(class)s_ordered_by"
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
 
