@@ -77,10 +77,11 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "quickstart.User"
 
 MIDDLEWARE = [
-    # WhiteNoise
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     # COR
     'corsheaders.middleware.CorsMiddleware',
+
+    # WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -148,6 +149,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+CORS_ORIGIN_ALLOW_ALL = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
