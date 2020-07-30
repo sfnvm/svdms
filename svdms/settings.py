@@ -36,6 +36,8 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'd@gpw1i_2gecs&iz*0+v3c4-gr_@5m$!zyr1#9jmr-&j1jg3e_'
 
+GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(BASE_DIR, 'quickstart-1596076183779-7808539fad98.json')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -68,6 +70,9 @@ INSTALLED_APPS = [
 
     # CORS
     'corsheaders',
+
+    # Django GG Drive Storage
+    'gdstorage',
 
     # Local Apps
     'quickstart',

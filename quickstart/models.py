@@ -5,6 +5,11 @@ from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 
+from gdstorage.storage import GoogleDriveStorage
+
+# Define Google Drive Storage
+gd_storage = GoogleDriveStorage()
+
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -150,7 +155,7 @@ class Product(models.Model):
     # info
     code = models.CharField(max_length=32, unique=True, blank=True)
     name = models.CharField(max_length=256, blank=True)
-    image_url = models.CharField(max_length=1024, blank=True)
+    image = models.FileField(upload_to='images/', storage=gd_storage, blank=True)
     weight = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
