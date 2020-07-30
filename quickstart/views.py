@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model, authenticate, login
+from django.core import serializers
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -79,7 +80,16 @@ class CustomObtainAuthToken(ObtainAuthToken):
             request, *args, **kwargs
         )
         token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+        # serialized_obj = serializers.serialize('json', token.user)
+        # print(serialized_obj)
+        return Response({
+            'token': token.key,
+            'id': token.user_id,
+            'first_name': token.user.first_name,
+            'last_name': token.user.last_name,
+            'email': token.user.email,
+            'role': token.user.role
+        })
 
 
 class UserViewSet(ModelViewSet):
