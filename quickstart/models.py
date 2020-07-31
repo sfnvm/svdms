@@ -3,9 +3,10 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_delete, post_init
+from django.db.models.signals import post_save, pre_delete, post_delete, post_init
 
 from gdstorage.storage import GoogleDriveStorage
+from quickstart import utils as app_utils
 
 # Define Google Drive Storage
 gd_storage = GoogleDriveStorage()
@@ -213,7 +214,7 @@ class RequestOrder(models.Model):
 
     # permission required
     approved = models.BooleanField(default=False)
-    apprived_at = models.DateTimeField(blank=True, null=True)
+    approved_at = models.DateTimeField(blank=True, null=True)
 
     # permission required
     rejected = models.BooleanField(default=False)
@@ -223,21 +224,6 @@ class RequestOrder(models.Model):
 
     def __str__(self):
         return self.code
-
-#     @staticmethod
-#     def post_save(sender, **kwargs):
-#         instance = kwargs.get('instance')
-#         created = kwargs.get('created')
-#         if instance.approved == True:
-#             print('req order is accepted, creating agreedOrder now ...')
-#             maxId = AgreedOrder.objects.all().order_by("-id").first().id
-#             print('agreedOrder current max id =', maxId)
-#             AgreedOrder.objects.create("AGOD" + maxId, )
-#             pass
-
-
-# # Signal when aproving req order
-# post_save.connect(RequestOrder.post_save, sender=RequestOrder)
 
 
 # This model cannot delete
@@ -258,6 +244,12 @@ class AgreedOrder(models.Model):
         max_digits=11, decimal_places=2, default=0)
 
     # permission required
+    approved = models.BooleanField(default=False)
+    approved_on = models.DateTimeField(blank=True, null=True)
+
+    rejected = models.BooleanField(default=False)
+    rejected_on = models.DateTimeField(blank=True, null=True)
+
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(blank=True, null=True)
 
@@ -287,12 +279,35 @@ class RequestOrderProductDetails(models.Model):
         RequestOrder, on_delete=models.CASCADE
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    negotiated_price = models.DecimalField(
+        max_digits=9, decimal_places=2, blank=True, null=True)
     amount = models.IntegerField(default=0)
 
 
-@receiver(post_save, sender=RequestOrderProductDetails)
-def raise_req_bill_value(sender, instance, created, **kwargs):
-    pass
+def increase_req_bill_value(sender, instance, created, **kwargs):
+    if created:
+        print('instance creating:', instance)
+        current_price = app_utils.get_current_product_price(
+            instance.product.id)
+        in_total = current_price * instance.amount
+        print(in_total)
+        instance.request_order.bill_value = instance.request_order.bill_value + in_total
+        print(instance.request_order.bill_value)
+        instance.request_order.save()
+
+
+def decreate_req_bill_value(sender, instance, **kwargs):
+    print('on delete instance:', instance)
+    in_total = instance.negotiated_price * instance.amount
+    print(in_total)
+    instance.request_order.bill_value = instance.request_order.bill_value - in_total
+    print(instance.request_order.bill_value)
+    instance.request_order.save()
+    print(instance.request_order)
+
+
+post_save.connect(increase_req_bill_value, sender=RequestOrderProductDetails)
+pre_delete.connect(decreate_req_bill_value, sender=RequestOrderProductDetails)
 
 
 class AgreedOrderProductDetails(models.Model):

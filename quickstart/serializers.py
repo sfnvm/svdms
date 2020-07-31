@@ -10,6 +10,7 @@ from django.db.models import Sum
 from rest_framework import serializers
 
 from quickstart import models as app_models
+from quickstart import utils as app_utils
 
 
 # Libs instance
@@ -35,11 +36,11 @@ class UserSerializer(serializers.ModelSerializer):  # OK
         fields = '__all__'
         read_only_fields = ('date_joined', 'is_superuser',
                             'is_staff', 'is_active')
-        depth = 1
-        # exclude = ['password']
+        # exclude = ('',)
         extra_kwargs = {
             'password': {'write_only': True}
         }
+        depth = 1
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
@@ -119,11 +120,13 @@ class MasterProductPriceSerializer(serializers.ModelSerializer):  # OK
 class ProductSerializer(serializers.ModelSerializer):  # OK
     product_type = ProductTypeSerializer(read_only=True)
     product_type_id = serializers.PrimaryKeyRelatedField(
-        source='product_type', queryset=app_models.ProductType.objects.order_by('id').filter(removed=False), write_only=True)
+        source='product_type', write_only=True,
+        queryset=app_models.ProductType.objects.order_by('id').filter(removed=False))
 
     product_unit_type = ProductUnitTypeSerializer(read_only=True)
     product_unit_type_id = serializers.PrimaryKeyRelatedField(
-        source='product_unit_type', queryset=app_models.ProductUnitType.objects.order_by('id').filter(removed=False), write_only=True)
+        source='product_unit_type', write_only=True,
+        queryset=app_models.ProductUnitType.objects.order_by('id').filter(removed=False))
 
     current_price = serializers.SerializerMethodField()
     available_quantity = serializers.SerializerMethodField()
@@ -176,17 +179,27 @@ class ProductSerializer(serializers.ModelSerializer):  # OK
 class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
-        source='product', queryset=app_models.Product.objects.order_by('id').filter(removed=False), write_only=True)
+        source='product', write_only=True,
+        queryset=app_models.Product.objects.order_by('id').filter(removed=False))
 
     class Meta:
         model = app_models.RequestOrderProductDetails
         exclude = ['request_order']
 
+    def validate(self, data):
+        print(data)
+        if data['amount'] > app_utils.get_available_product_quantity(data['product_id']):
+            raise serializers.ValidationError(
+                {"amount_error": "Cannot satisfy product quantity. REASON: NOT ENOUGH PRODUCT IN STORAGE",
+                 "details": f"{data['product_id']}"})
+        return data
+
 
 class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
-        source='product', queryset=app_models.Product.objects.order_by('id').filter(removed=False), write_only=True)
+        source='product', write_only=True,
+        queryset=app_models.Product.objects.order_by('id').filter(removed=False))
 
     class Meta:
         model = app_models.AgreedOrderProductDetails
@@ -195,12 +208,12 @@ class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
 
 class RequestOrderSerializer(serializers.ModelSerializer):  # OK
     created_by = serializers.StringRelatedField(
-        default=serializers.CurrentUserDefault(), read_only=True
-    )
+        default=serializers.CurrentUserDefault(), read_only=True)
 
     agency = AgencySerializer(read_only=True)
     agency_id = serializers.PrimaryKeyRelatedField(
-        source='agency', queryset=app_models.Agency.objects.order_by('id').filter(removed=False), write_only=True)
+        source='agency', write_only=True,
+        queryset=app_models.Agency.objects.order_by('id').filter(removed=False))
 
     requestorderproductdetails_set = RequestOrderProductDetailsSerializer(
         many=True, read_only=True)
@@ -214,17 +227,32 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
     def create(self, validated_data):
         request_order_data = validated_data.pop('details')
 
+        # Validated amount
+        for req_order in request_order_data:
+            RequestOrderProductDetailsSerializer.validate(
+                RequestOrderProductDetailsSerializer,
+                req_order)
+
         request_order = app_models.RequestOrder.objects.create(
             **validated_data)
 
         for req_order in request_order_data:
             app_models.RequestOrderProductDetails.objects.create(
-                request_order=request_order, **req_order)
+                request_order=request_order,
+                negotiated_price=app_utils.get_current_product_price(
+                    req_order['product_id']),
+                **req_order)
 
         return request_order
 
     def update(self, instance, validated_data):
         request_order_data = validated_data.pop('details')
+
+        # Validated ammout
+        for req_order in request_order_data:
+            RequestOrderProductDetailsSerializer.validate(
+                RequestOrderProductDetailsSerializer,
+                req_order)
 
         instance.__dict__.update(**validated_data)
         instance.save()
@@ -232,12 +260,18 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
         app_models.RequestOrderProductDetails.objects.filter(
             request_order=instance).delete()
 
+        instance = app_models.RequestOrder.objects.filter(
+            id=instance.id).first()
+
         # TODO 500
         for req_order in request_order_data:
             app_models.RequestOrderProductDetails.objects.create(
-                request_order=instance, **req_order)
+                request_order=instance,
+                negotiated_price=app_utils.get_current_product_price(
+                    req_order['product_id']),
+                **req_order)
 
-        return instance
+        return app_models.RequestOrder.objects.filter(id=instance.id).first()
 
 
 class AgreedOrderSerializer(serializers.ModelSerializer):
@@ -246,7 +280,8 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 
     agency = AgencySerializer(read_only=True)
     agency_id = serializers.PrimaryKeyRelatedField(
-        source='agency', queryset=app_models.Agency.objects.order_by('id').filter(removed=False), write_only=True)
+        source='agency', write_only=True,
+        queryset=app_models.Agency.objects.order_by('id').filter(removed=False))
 
     requestorderproductdetails_set = RequestOrderProductDetailsSerializer(
         many=True, read_only=True)
@@ -270,7 +305,8 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 class StorageProductDetailsSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
-        source='product', queryset=app_models.Product.objects.order_by('id').filter(removed=False), write_only=True)
+        source='product', write_only=True,
+        queryset=app_models.Product.objects.order_by('id').filter(removed=False))
 
     class Meta:
         model = app_models.StorageProductDetails

@@ -1,8 +1,12 @@
+from datetime import date, datetime
+
+from django.db.models import Sum
+
 from quickstart import models as app_models
 
 
 def get_current_product_price(product_id):
-    obj = app_models.Product.objects.filter(id=product_id)
+    obj = app_models.Product.objects.filter(id=product_id).first()
     master_price = app_models.MasterProductPrice.objects.filter(
         product=obj, removed=False).order_by('created_at').reverse()
     for mprice in master_price:
@@ -10,11 +14,23 @@ def get_current_product_price(product_id):
             continue
         if mprice.to_date >= date.today():
             return mprice.price
-    return 0
+    return obj.base_price
+
+
+def get_product_price_by_date(product_id, timestamp):
+    obj = app_models.Product.objects.filter(id=product_id).first()
+    master_price = app_models.MasterProductPrice.objects.filter(
+        product=obj, removed=False).order_by('created_at').reverse()
+    for mprice in master_price:
+        if mprice.from_date > timestamp.date():
+            continue
+        if mprice.to_date >= timestamp.date():
+            return mprice.price
+    return obj.base_price
 
 
 def get_available_product_quantity(product_id):
-    obj = app_models.Product.objects.filter(id=product_id)
+    obj = app_models.Product.objects.filter(id=product_id).first()
     all_input = app_models.StorageProductDetails.objects.filter(
         product=obj).aggregate(all_input=Sum('amount'))['all_input'] or 0
 
