@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, post_init
 
 from gdstorage.storage import GoogleDriveStorage
 
@@ -19,7 +19,8 @@ class User(AbstractUser):
         (4, 'agency'),
     )
 
-    role = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=4)
+    role = models.PositiveSmallIntegerField(
+        choices=USER_TYPE_CHOICES, default=4)
 
 
 class Profile(models.Model):
@@ -155,7 +156,8 @@ class Product(models.Model):
     # info
     code = models.CharField(max_length=32, unique=True, blank=True)
     name = models.CharField(max_length=256, blank=True)
-    image = models.FileField(upload_to='images/', storage=gd_storage, blank=True)
+    image = models.FileField(
+        upload_to='images/', storage=gd_storage, blank=True)
     weight = models.IntegerField(default=0)
     width = models.IntegerField(default=0)
     height = models.IntegerField(default=0)
@@ -222,6 +224,21 @@ class RequestOrder(models.Model):
     def __str__(self):
         return self.code
 
+#     @staticmethod
+#     def post_save(sender, **kwargs):
+#         instance = kwargs.get('instance')
+#         created = kwargs.get('created')
+#         if instance.approved == True:
+#             print('req order is accepted, creating agreedOrder now ...')
+#             maxId = AgreedOrder.objects.all().order_by("-id").first().id
+#             print('agreedOrder current max id =', maxId)
+#             AgreedOrder.objects.create("AGOD" + maxId, )
+#             pass
+
+
+# # Signal when aproving req order
+# post_save.connect(RequestOrder.post_save, sender=RequestOrder)
+
 
 # This model cannot delete
 class AgreedOrder(models.Model):
@@ -267,11 +284,15 @@ class RequestOrderProductDetails(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     request_order = models.ForeignKey(
-        RequestOrder, on_delete=models.CASCADE,
-        related_name="%(class)s_ordered_by"
+        RequestOrder, on_delete=models.CASCADE
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
+
+
+@receiver(post_save, sender=RequestOrderProductDetails)
+def raise_req_bill_value(sender, instance, created, **kwargs):
+    pass
 
 
 class AgreedOrderProductDetails(models.Model):
@@ -281,7 +302,9 @@ class AgreedOrderProductDetails(models.Model):
     # auto fields
     created_at = models.DateTimeField(auto_now_add=True)
 
-    agreed_order = models.ForeignKey(AgreedOrder, on_delete=models.CASCADE)
+    agreed_order = models.ForeignKey(
+        AgreedOrder, on_delete=models.CASCADE
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)
 

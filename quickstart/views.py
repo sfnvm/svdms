@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model, authenticate, login
@@ -23,7 +25,9 @@ from rest_framework import status
 from quickstart import models as app_models
 from quickstart import serializers as app_serializers
 
+# Libs instance
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])  # simple endpoint to check credential
@@ -36,7 +40,7 @@ def check_token(request):
 
 
 @api_view
-def get_current_profile(request):
+def get_current_profile(request):  # Need it?
     pass
 
 
@@ -49,8 +53,8 @@ class LoginView(APIView):  # Session login
         username = request.data['username']
         password = request.data['password']
 
-        # logger.debug('Attempt authentication with %s : "%s"' %
-        #              (username, password,))
+        logger.debug('Attempt authentication with %s : "%s"' %
+                     (username, password,))
         # Attempt authentication
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -63,14 +67,14 @@ class LoginView(APIView):  # Session login
                 #     request.session.set_expiry(0)
 
                 # Return successful response
-                # logger.debug('Login successfully')
+                logger.debug('Login successfully')
                 return Response(self.serializer_class(user).data)
             else:
-                # logger.warn('User %s is de-activated' % username)
+                logger.warn('User %s is de-activated' % username)
                 return Response(status=status.HTTP_403_FORBIDDEN)
         else:
-            # logger.debug('Unauthorized access with %s : "%s"' %
-            #              (username, password,))
+            logger.debug('Unauthorized access with %s : "%s"' %
+                         (username, password,))
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -195,16 +199,51 @@ class RequestOrderViewSet(ModelViewSet):
     queryset = app_models.RequestOrder.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.RequestOrderSerializer
 
+    def auto_create_agreed_order(self, data):
+        print('approved')
+
     def perform_create(self, serializer):
         req = serializer.context['request']
+        req_data = serializer.validated_data
+        if "approved" in req_data:
+            if req_data['approved']:
+                self.auto_create_agreed_order(req_data)
         serializer.save(created_by=req.user)
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+    def perform_destroy(self, request):
+        pass
 
 
 class AgreedOrderViewSet(ModelViewSet):
     queryset = app_models.AgreedOrder.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.AgreedOrderSerializer
 
+    def perform_create(self, serializer):
+        req = serializer.context['request']
+        serializer.save(created_by=req.user)
+
+    def perform_destroy(self, request):
+        instance = self.get_object()
+        if(instance.removed == False):
+            instance.removed_by = self.request.user
+            instance.removed = True
+            instance.save()
+
 
 class StorageViewSet(ModelViewSet):
     queryset = app_models.Storage.objects.all().order_by('id').filter(removed=False)
     serializer_class = app_serializers.StorageSerializer
+
+    def perform_create(self, serializer):
+        req = serializer.context['request']
+        serializer.save(created_by=req.user)
+
+    def perform_destroy(self, request):
+        instance = self.get_object()
+        if(instance.removed == False):
+            instance.removed_by = self.request.user
+            instance.removed = True
+            instance.save()
