@@ -99,8 +99,10 @@ class CustomObtainAuthToken(ObtainAuthToken):
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined').filter(is_active=True)
     serializer_class = app_serializers.UserSerializer
-    # permission_classes = [permissions.IsAdminUser, ]
 
+    """
+    Filter
+    """
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', 'email']
 
@@ -108,7 +110,6 @@ class UserViewSet(ModelViewSet):
 class GroupViewSet(ModelViewSet):
     queryset = Group.objects.all().order_by('id')
     serializer_class = app_serializers.GroupSerializer
-    # permission_classes = [permissions.IsAdminUser, ]
 
 
 class PermissionViewSet(ModelViewSet):
@@ -129,12 +130,18 @@ class AgencyViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
+    """
+    Mark as removed
+    """
+    # def perform_destroy(self, request):
+    #     instance = self.get_object()
+    #     if(instance.removed == False):
+    #         instance.removed_by = self.request.user
+    #         instance.removed = True
+    #         instance.save()
+
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()
 
 
 class ProductTypeViewSet(ModelViewSet):
@@ -146,11 +153,7 @@ class ProductTypeViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()
 
 
 class ProductUnitPyteViewSet(ModelViewSet):
@@ -163,11 +166,7 @@ class ProductUnitPyteViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()
 
 
 class ProductViewSet(ModelViewSet):
@@ -182,17 +181,20 @@ class ProductViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()
 
 
 class MasterProductPriceViewSet(ModelViewSet):
     queryset = app_models.MasterProductPrice.objects.all().order_by(
         'id').filter(removed=False)
     serializer_class = app_serializers.MasterProductPriceSerializer
+
+    def perform_create(self, serializer):
+        req = serializer.context['request']
+        serializer.save(created_by=req.user)
+
+    def perform_destroy(self, request):
+        instance.delete()
 
 
 class RequestOrderViewSet(ModelViewSet):
@@ -214,7 +216,7 @@ class RequestOrderViewSet(ModelViewSet):
         instance = serializer.save()
 
     def perform_destroy(self, request):
-        pass
+        instance.delete()
 
 
 class AgreedOrderViewSet(ModelViewSet):
@@ -226,11 +228,7 @@ class AgreedOrderViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()
 
 
 class StorageViewSet(ModelViewSet):
@@ -242,8 +240,4 @@ class StorageViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     def perform_destroy(self, request):
-        instance = self.get_object()
-        if(instance.removed == False):
-            instance.removed_by = self.request.user
-            instance.removed = True
-            instance.save()
+        instance.delete()

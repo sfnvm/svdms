@@ -34,8 +34,8 @@ def get_available_product_quantity(product_id):
     all_input = app_models.StorageProductDetails.objects.filter(
         product=obj).aggregate(all_input=Sum('amount'))['all_input'] or 0
 
-    current_sold = app_models.AgreedOrder.objects.filter(
-        delivered=True, paid=True)
+    # delivered=True, paid=True
+    current_sold = app_models.AgreedOrder.objects.filter(removed=False)
 
     soldSum = 0
     for success_order in current_sold:

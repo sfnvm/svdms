@@ -142,12 +142,13 @@ class ProductSerializer(serializers.ModelSerializer):  # OK
 
         return obj.base_price
 
+    # a bit dumb but it's work for current situation
     def get_available_quantity(self, obj):
         all_input = app_models.StorageProductDetails.objects.filter(
             product=obj).aggregate(all_input=Sum('amount'))['all_input'] or 0
 
         current_sold = app_models.AgreedOrder.objects.filter(
-            delivered=True, paid=True)
+            removed=False)
 
         soldSum = 0
         for success_order in current_sold:
@@ -161,7 +162,6 @@ class ProductSerializer(serializers.ModelSerializer):  # OK
     # get price at current time
     def __init__(self, *args, **kwargs):
         super(ProductSerializer, self).__init__(*args, **kwargs)
-
         try:
             if self.context['request'].method == 'GET':
                 pass
@@ -187,7 +187,6 @@ class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
         exclude = ['request_order']
 
     def validate(self, data):
-        print(data)
         if data['amount'] > app_utils.get_available_product_quantity(data['product_id']):
             raise serializers.ValidationError(
                 {"amount_error": "Cannot satisfy product quantity. REASON: NOT ENOUGH PRODUCT IN STORAGE",
@@ -224,6 +223,12 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
         fields = '__all__'
         read_only_fields = ['bill_value']
 
+    def approving(self, data):
+        AgreedOrderSerializer.create(AgreedOrderSerializer, data)
+
+    def rejecting(self):
+        pass
+
     def create(self, validated_data):
         request_order_data = validated_data.pop('details')
 
@@ -242,6 +247,15 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
                 negotiated_price=app_utils.get_current_product_price(
                     req_order['product_id']),
                 **req_order)
+
+        if request_order.approved:
+            max_id = app_models.AgreedOrder.objects.all().order_by('-id').first().id
+            self.approving({
+                'created_by': request_order.created_by,
+                'request_order': request_order,
+                'code': 'AGO' + str(max_id),
+                'details': []
+            })
 
         return request_order
 
@@ -271,7 +285,18 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
                     req_order['product_id']),
                 **req_order)
 
-        return app_models.RequestOrder.objects.filter(id=instance.id).first()
+        result = app_models.RequestOrder.objects.filter(id=instance.id).first()
+
+        if result.approved:
+            max_id = app_models.AgreedOrder.objects.all().order_by('-id').first().id
+            self.approving({
+                'created_by': result.created_by,
+                'request_order': result,
+                'code': 'AGO' + str(max_id),
+                'details': []
+            })
+
+        return result
 
 
 class AgreedOrderSerializer(serializers.ModelSerializer):
@@ -279,11 +304,17 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault(), read_only=True)
 
     agency = AgencySerializer(read_only=True)
-    agency_id = serializers.PrimaryKeyRelatedField(
-        source='agency', write_only=True,
-        queryset=app_models.Agency.objects.order_by('id').filter(removed=False))
+    # agency_id = serializers.PrimaryKeyRelatedField(
+    #     source='agency', write_only=True,
+    #     queryset=app_models.Agency.objects.order_by('id').filter(removed=False))
 
-    requestorderproductdetails_set = RequestOrderProductDetailsSerializer(
+    request_order = RequestOrderSerializer(read_only=True)
+    request_order_id = serializers.PrimaryKeyRelatedField(
+        source='request_order', write_only=True,
+        queryset=app_models.RequestOrder.objects.order_by(
+            'id').filter(removed=False))
+
+    agreedorderproductdetails_set = AgreedOrderProductDetailsSerializer(
         many=True, read_only=True)
     details = serializers.JSONField(
         write_only=True)
@@ -291,9 +322,48 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = app_models.AgreedOrder
         fields = '__all__'
+        read_only_fields = ['bill_value']
 
     def create(self, validated_data):
-        pass
+        agreed_order_data = validated_data.pop('details')
+        agreed_order = app_models.AgreedOrder.objects.create(agency=validated_data['request_order'].agency,
+                                                             **validated_data)
+
+        # get all req order current in new stage
+        unprocessed_request_orders = app_models.RequestOrder.objects.order_by(
+            'id').filter(removed=False, rejected=False, approved=False)
+
+        # cal product amount can provide
+        products_current_req = {}
+        for unprocessed_request_order in unprocessed_request_orders:
+            details = app_models.RequestOrderProductDetails.objects.filter(
+                request_order=unprocessed_request_order)
+            for req_detail in details:
+                if req_detail.product.id not in products_current_req:
+                    products_current_req[req_detail.product.id] = req_detail.amount
+                else:
+                    products_current_req[req_detail.product.id] += req_detail.amount
+
+        request_order_details = app_models.RequestOrderProductDetails.objects.filter(
+            request_order=validated_data['request_order'])
+
+        for detail in request_order_details:
+            amount_can_provide = 0
+            if app_utils.get_available_product_quantity(
+                    detail.product.id) > detail.amount + products_current_req[detail.product.id]:
+                amount_can_provide = detail.amount
+            else:
+                amount_can_provide = int(app_utils.get_available_product_quantity(
+                    detail.product.id) * (detail.amount/(detail.amount + products_current_req[detail.product.id])))
+
+            app_models.AgreedOrderProductDetails.objects.create(
+                product=detail.product,
+                negotiated_price=detail.negotiated_price,
+                agreed_order=agreed_order,
+                request_amount=detail.amount,
+                amount=amount_can_provide)
+
+        return agreed_order
 
     def update(self, instance, validated_data):
         pass
