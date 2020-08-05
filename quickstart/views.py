@@ -1,243 +1,26 @@
-import logging
-
-from django.shortcuts import render
-from django.contrib.auth.models import Group, Permission
-from django.contrib.auth import get_user_model, authenticate, login
-from django.core import serializers
-
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.renderers import JSONRenderer
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-
-from rest_framework import permissions
-from rest_framework.authentication import BaseAuthentication, BasicAuthentication
-from rest_framework import filters
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-
-from quickstart import models as app_models
-from quickstart import serializers as app_serializers
-
-# Libs instance
-User = get_user_model()
-logger = logging.getLogger(__name__)
-
-
-@api_view(['GET'])  # simple endpoint to check credential
-def check_token(request):
-    """
-    Check token
-    """
-    content = {'details': 'Token is OK!'}
-    return Response(content)
-
-
-@api_view
-def get_current_profile(request):  # Need it?
-    pass
-
-
-class LoginView(APIView):  # Session login
-    serializer_class = app_serializers.UserSerializer
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-
-        username = request.data['username']
-        password = request.data['password']
-
-        logger.debug('Attempt authentication with %s : "%s"' %
-                     (username, password,))
-        # Attempt authentication
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                # Care for the session
-                login(request, user)
-                # se the expiration to 0 if remember wasn't requested
-
-                # if not remember:
-                #     request.session.set_expiry(0)
-
-                # Return successful response
-                logger.debug('Login successfully')
-                return Response(self.serializer_class(user).data)
-            else:
-                logger.warn('User %s is de-activated' % username)
-                return Response(status=status.HTTP_403_FORBIDDEN)
-        else:
-            logger.debug('Unauthorized access with %s : "%s"' %
-                         (username, password,))
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-class CustomObtainAuthToken(ObtainAuthToken):
-    def post(self, request, *args, **kwargs):
-        response = super(CustomObtainAuthToken, self).post(
-            request, *args, **kwargs
-        )
-        token = Token.objects.get(key=response.data['token'])
-        # serialized_obj = serializers.serialize('json', token.user)
-        # print(serialized_obj)
-        return Response({
-            'token': token.key,
-            'id': token.user_id,
-            'first_name': token.user.first_name,
-            'last_name': token.user.last_name,
-            'email': token.user.email,
-            'role': token.user.role
-        })
-
-
-class UserViewSet(ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined').filter(is_active=True)
-    serializer_class = app_serializers.UserSerializer
-
-    """
-    Filter
-    """
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['username', 'email']
-
-
-class GroupViewSet(ModelViewSet):
-    queryset = Group.objects.all().order_by('id')
-    serializer_class = app_serializers.GroupSerializer
-
-
-class PermissionViewSet(ModelViewSet):
-    queryset = Permission.objects.all().order_by('id')
-    serializer_class = app_serializers.PermissionSerializer
-
-
-class ProfileViewSet(ModelViewSet):
-    queryset = app_models.Profile.objects.all().order_by('id')
-    serializer_class = app_serializers.ProfileSerializer
-
-
-class AgencyViewSet(ModelViewSet):
-    queryset = app_models.Agency.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.AgencySerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    """
-    Mark as removed
-    """
-    # def perform_destroy(self, request):
-    #     instance = self.get_object()
-    #     if(instance.removed == False):
-    #         instance.removed_by = self.request.user
-    #         instance.removed = True
-    #         instance.save()
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class ProductTypeViewSet(ModelViewSet):
-    queryset = app_models.ProductType.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.ProductTypeSerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class ProductUnitPyteViewSet(ModelViewSet):
-    queryset = app_models.ProductUnitType.objects.all().order_by(
-        'id').filter(removed=False)
-    serializer_class = app_serializers.ProductUnitTypeSerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class ProductViewSet(ModelViewSet):
-    queryset = app_models.Product.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.ProductSerializer
-
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class MasterProductPriceViewSet(ModelViewSet):
-    queryset = app_models.MasterProductPrice.objects.all().order_by(
-        'id').filter(removed=False)
-    serializer_class = app_serializers.MasterProductPriceSerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class RequestOrderViewSet(ModelViewSet):
-    queryset = app_models.RequestOrder.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.RequestOrderSerializer
-
-    def auto_create_agreed_order(self, data):
-        print('approved')
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        req_data = serializer.validated_data
-        if "approved" in req_data:
-            if req_data['approved']:
-                self.auto_create_agreed_order(req_data)
-        serializer.save(created_by=req.user)
-
-    def perform_update(self, serializer):
-        instance = serializer.save()
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class AgreedOrderViewSet(ModelViewSet):
-    queryset = app_models.AgreedOrder.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.AgreedOrderSerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
-
-
-class StorageViewSet(ModelViewSet):
-    queryset = app_models.Storage.objects.all().order_by('id').filter(removed=False)
-    serializer_class = app_serializers.StorageSerializer
-
-    def perform_create(self, serializer):
-        req = serializer.context['request']
-        serializer.save(created_by=req.user)
-
-    def perform_destroy(self, request):
-        instance.delete()
+# import logging
+
+# from django.shortcuts import render
+# from django.contrib.auth.models import Group, Permission
+# from django.contrib.auth import get_user_model, authenticate, login
+# from django.core import serializers
+
+# from rest_framework.views import APIView
+# from rest_framework.viewsets import ModelViewSet
+# from rest_framework.renderers import JSONRenderer
+# from rest_framework.response import Response
+# from rest_framework.permissions import AllowAny
+
+# from rest_framework.authtoken.views import ObtainAuthToken
+# from rest_framework.authtoken.models import Token
+
+# from rest_framework import permissions
+# from rest_framework.authentication import BaseAuthentication, BasicAuthentication
+# from rest_framework import filters
+
+# from rest_framework.decorators import api_view
+# from rest_framework.response import Response
+# from rest_framework import status
+
+# from quickstart import models as app_models
+# from quickstart import serializers as app_serializers

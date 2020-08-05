@@ -4,13 +4,33 @@ from django.contrib.auth.views import LoginView
 
 from rest_framework import routers
 from rest_framework import permissions
-from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from quickstart import views as app_views
+# from quickstart import views as app_views
+from users.views import (
+    CustomObtainAuthToken,  # Tokens
+    LoginView,              # Sessions
+    UserViewSet,
+    ProfileViewSet,
+    check_token,
+)
+from permissions.views import (
+    GroupViewSet,
+    PermissionViewSet
+)
+from agencies.views import AgencyViewSet
+from orders.views import (
+    RequestOrderViewSet,
+    AgreedOrderViewSet
+)
+from products.views import (
+    ProductTypeViewSet,
+    ProductUnitPyteViewSet,
+    ProductViewSet
+)
+from storages.views import StorageViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -27,20 +47,20 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 
-router.register(r'users', app_views.UserViewSet)
-router.register(r'groups', app_views.GroupViewSet)
-router.register(r'permissions', app_views.PermissionViewSet)
-router.register(r'profiles', app_views.ProfileViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'groups', GroupViewSet)
+router.register(r'permissions', PermissionViewSet)
+router.register(r'profiles', ProfileViewSet)
 
-router.register(r'agencies', app_views.AgencyViewSet)
-router.register(r'request-orders', app_views.RequestOrderViewSet)
-router.register(r'agreed-orders', app_views.AgreedOrderViewSet)
+router.register(r'agencies', AgencyViewSet)
+router.register(r'request-orders', RequestOrderViewSet)
+router.register(r'agreed-orders', AgreedOrderViewSet)
 
-router.register(r'products', app_views.ProductViewSet)
-router.register(r'product-types', app_views.ProductTypeViewSet)
-router.register(r'product-unit-types', app_views.ProductUnitPyteViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'product-types', ProductTypeViewSet)
+router.register(r'product-unit-types', ProductUnitPyteViewSet)
 
-router.register(r'storages', app_views.StorageViewSet)
+router.register(r'storages', StorageViewSet)
 
 urlpatterns = [
     # Swagger endpoints
@@ -54,16 +74,16 @@ urlpatterns = [
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
     # Get token
-    path(r'auth/', app_views.CustomObtainAuthToken.as_view(), name='api_token'),
+    path(r'auth/', CustomObtainAuthToken.as_view(), name='api_token'),
     # Session token
     # path(r'login/', LoginView.as_view(), name='login'),
-    path(r'login/', app_views.LoginView.as_view(), name='login'),
+    path(r'login/', LoginView.as_view(), name='login'),
     # OTP
     path('', include('drfpasswordless.urls')),
     # API endpoints with Router
     path('', include(router.urls)),
     # Check authen
-    path('auth/check/', app_views.check_token, name='check_token'),
+    path('auth/check/', check_token, name='check_token'),
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)

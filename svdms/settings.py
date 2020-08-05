@@ -36,7 +36,8 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'd@gpw1i_2gecs&iz*0+v3c4-gr_@5m$!zyr1#9jmr-&j1jg3e_'
 
-GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(BASE_DIR, 'quickstart-1596076183779-7808539fad98.json')
+GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = os.path.join(
+    BASE_DIR, 'quickstart-1596076183779-7808539fad98.json')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -75,11 +76,19 @@ INSTALLED_APPS = [
     'gdstorage',
 
     # Local Apps
-    'quickstart',
+    'users',
+    'agencies',
+    'products',
+    'storages',
+    'orders',
+    'permissions',
+    'areas',
+    'api_docs',
+    'commons'
 ]
 
 # Define AUTH USER MODEL
-AUTH_USER_MODEL = "quickstart.User"
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     # COR
@@ -151,7 +160,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_PAGINATION_CLASS': 'quickstart.pagination.CustomPageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'commons.pagination.CustomPageNumberPagination',
     'PAGE_SIZE': 10
 }
 
