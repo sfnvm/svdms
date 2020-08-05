@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     # OTP
     'drfpasswordless',
 
-    # Gen DB diagram from CLI
+    # Gen DB diagram, Import mock csv from CLI
     'django_extensions',
 
     # CORS

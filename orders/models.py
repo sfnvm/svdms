@@ -10,7 +10,7 @@ from products.models import Product as ProductModel
 
 class RequestOrder(models.Model):
     class Meta:
-        db_table = 'request_order'
+        db_table = 'request_orders'
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
@@ -40,7 +40,7 @@ class RequestOrder(models.Model):
 # This model cannot delete
 class AgreedOrder(models.Model):
     class Meta:
-        db_table = 'agreed_order'
+        db_table = 'agreed_orders'
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,

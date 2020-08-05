@@ -9,13 +9,17 @@ from users.models import (
 logger = logging.getLogger(__name__)
 
 
-class ProfileSerializer(serializers.ModelSerializer):  # OK
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileModel
         exclude = ['user']
+        # duplicate error when update unique field with the same data
+        # extra_kwargs = {
+        #     'code': {'validators': []},
+        # }
 
 
-class UserSerializer(serializers.ModelSerializer):  # OK
+class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
 
     class Meta:

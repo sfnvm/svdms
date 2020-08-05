@@ -6,7 +6,7 @@ from products.models import Product
 
 class Storage(models.Model):
     class Meta:
-        db_table = 'storage'
+        db_table = 'storages'
 
     # auto fields
     created_by = models.ForeignKey(

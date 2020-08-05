@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Agency(models.Model):
     class Meta:
-        db_table = 'agency'
+        db_table = 'agencies'
 
     # auto field
     created_by = models.ForeignKey(
@@ -13,7 +13,6 @@ class Agency(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Tài khoản chủ sỡ hữu đại lý // Chú ý role khi gán user
     user_related = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_owned_by"

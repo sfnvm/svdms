@@ -5,6 +5,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    class Meta:
+        db_table = 'users'
     USER_TYPE_CHOICES = (
         (1, 'admin'),
         (2, 'manager'),
@@ -18,13 +20,14 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     class Meta:
-        db_table = 'profile'
+        db_table = 'profiles'
 
     # auto fields
     user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
+    email = models.EmailField(unique=True, blank=True)
 
     # required
-    code = models.CharField(max_length=32, unique=True, blank=True)
+    # code = models.CharField(max_length=32, unique=True, blank=True)
     address = models.CharField(max_length=256, blank=True)
     phone_number = models.CharField(max_length=16, blank=True)
     gender = models.BooleanField(default=True)

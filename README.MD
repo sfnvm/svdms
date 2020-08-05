@@ -45,6 +45,11 @@ $ python manage.py graph_models -a -g -o db.png
 $ python manage.py graph_models -a -o db.png  
 ```
 
+# Dumb Data
+```console
+$ python manage.py runscript load_data
+```
+
 # Create Superusers
 ```console
 $ python manage.py createsuperuser --email trungpt.dev@gmail.com --username trungpt  

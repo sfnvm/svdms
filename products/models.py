@@ -56,7 +56,7 @@ class ProductType(models.Model):
 
 class Product(models.Model):
     class Meta:
-        db_table = 'product'
+        db_table = 'products'
 
     # auto fields
     created_by = models.ForeignKey(
@@ -75,9 +75,9 @@ class Product(models.Model):
     name = models.CharField(max_length=256, blank=True)
     image = models.FileField(
         upload_to='images/', storage=gd_storage, blank=True)
-    weight = models.IntegerField(default=0)
-    width = models.IntegerField(default=0)
-    height = models.IntegerField(default=0)
+    weight = models.DecimalField(max_digits=9, decimal_places=5, default=0)
+    width = models.DecimalField(max_digits=9, decimal_places=5, default=0)
+    height = models.DecimalField(max_digits=9, decimal_places=5, default=0)
     base_price = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     origin = models.CharField(max_length=256, blank=True)
 
