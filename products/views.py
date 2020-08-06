@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from products.models import (
     Product as ProductModel,
     ProductType as ProductTypeModel,
@@ -52,8 +54,8 @@ class ProductViewSet(ModelViewSet):
     queryset = ProductModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = ProductSerializer
 
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['product_type_id']
 
     def perform_create(self, serializer):
         req = serializer.context['request']

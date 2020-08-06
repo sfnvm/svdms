@@ -35,8 +35,8 @@ drfpasswordless==1.5.4
 # Django CORS header
 django-cors-headers==3.4.0
 
-# Django Filter // No usage for this package rightnow
-# django-filter==2.3.0
+# Django Filter
+django-filter==2.3.0
 
 # Django GG Drive || Cloud storage maybe ?
 django-googledrive-storage==1.5.2

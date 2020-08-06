@@ -1,5 +1,5 @@
-﻿id,code,unit_type
-1,PUT0002,Thép Gia dụng
-2,PUT0003,Thép xây dựng
-3,PUT0004,Thép cầu đường
-4,PUT0005,Thép chế tạo máy
+﻿code,unit_type
+PUT0002,Cuộn
+PUT0003,Cái
+PUT0004,Tấm
+PUT0005,Thanh

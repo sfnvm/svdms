@@ -1,38 +1,38 @@
-﻿id,code,name,image,weight,width,height,base_price,origin,min_reserve_quantity,product_type_id,product_unit_type_id
-1,PRD0004,Băng thép inox, ,25,14,0.03,180000,Nam Phát Groups,2000,2,3
-2,PRD0005,ống inox,,7,0.2,9,140000,Nam Phát Groups,500,4,3
-3,PRD0006,ống dị hình,,20,0.01,0.3,600000,Nam Phát Groups,1500,1,4
-4,PRD0007,Khóa đai inox,,0.3,0.2,0.02,5000,Nam Phát Groups,15000,4,4
-5,PRD0008,Cổng thép inox,,50,2,3,7000000,Nam Phát Groups,50,3,2
-6,PRD0009,Bàn thép inox,,15,2,0.7,700000,Nam Phát Groups,300,4,2
-7,PRD0010,Thép hộp chữ nhật inox,,18,0.2,12,320000,Nam Phát Groups,2000,3,1
-8,PRD0011,Thép cuộn cán nóng,,12,0.6,0.012,235000,Nam Phát Groups,500,1,4
-9,PRD0012,Thép cuộn cán nguội,,10,0.5,0.01,215000,Nam Phát Groups,500,3,4
-10,PRD0013,Thép tấm cán nóng,,12,0.6,0.012,235000,Nam Phát Groups,500,1,4
-11,PRD0014,Thép tấm cán nguội,,10,0.5,0.01,215000,Nam Phát Groups,500,1,4
-12,PRD0015,Thép cuộn mạ kẽm,,5,0.01,50,500000,Nam Phát Groups,1500,3,2
-13,PRD0016,Thép dây,,8,0.01,50,350000,Nam Phát Groups,1800,3,4
-14,PRD0017,Xà gồ C,,10,0.1,10,600000,Nam Phát Groups,2000,4,4
-15,PRD0018,Thép hình,,20,0.02,0.3,580000,Nam Phát Groups,1000,2,2
-16,PRD0019,Thép tấm chống trượt,,150,2.5,0.05,3000000,Nam Phát Groups,700,4,2
-17,PRD0020,Xà gồ Z thép đen,,6,0.1,10,850000,Nam Phát Groups,1500,4,1
-18,PRD0021,Xà gồ Z mạ kẽm,,5,0.1,10,975000,Nam Phát Groups,1500,1,2
-19,PRD0022,Thép thanh tròn,,3,0.03,12,250000,Nam Phát Groups,3000,2,2
-20,PRD0023,Thép thanh vằn,,3,0.03,12,350000,Nam Phát Groups,3000,1,1
-21,PRD0024,Thép góc,,15,0.2,15,450000,Nam Phát Groups,700,1,3
-22,PRD0025,Thép hình I,,30,0.4,15,450000,Nam Phát Groups,500,2,3
-23,PRD0026,Thép hình H,,30,0.6,15,520000,Nam Phát Groups,600,1,4
-24,PRD0027,Thép hộp vuông inox,,15,0.2,12,350000,Nam Phát Groups,1000,3,1
-25,PRD0028,Thép hộp tròn inox,,13,0.15,12,320000,Nam Phát Groups,1000,4,1
-26,PRD0029,Thép hình V,,18,0.1,15,240000,Nam Phát Groups,1000,2,2
-27,PRD0030,Thép hình L,,15,0.15,12,270000,Nam Phát Groups,1200,4,1
-28,PRD0031,Thép tròn đặc S20C,,40,0.4,12,290000,Nam Phát Groups,300,4,3
-29,PRD0032,Thép tròn đặc S35C,,62,0.6,12,420000,Nam Phát Groups,400,1,3
-30,PRD0033,Thép chế tạo 40CR,,3,0.02,15,45000,Nam Phát Groups,2000,3,1
-31,PRD0034,Thép chế tạo SCM440 (tròn) ,,20,0.2,6,120000,Nam Phát Groups,350,2,4
-32,PRD0035,Thép chế tạo SCM420,,25,0.4,6,150000,Nam Phát Groups,400,1,2
-33,PRD0036,Thép chế tạo SCM490,,35,0.4,6,180000,Nam Phát Groups,250,2,1
-34,PRD0037,Thép chế tạo SCM440 (tấm),,15,3,6,90000,Nam Phát Groups,410,3,4
-35,PRD0038,Thép chế tạo skd61,,20,0.5,6,120000,Nam Phát Groups,230,2,1
-36,PRD0039,Thép chế tạo carbon,,18,3,6,240000,Nam Phát Groups,430,2,2
-37,PRD0040,Thép chế tạo s45c,,20,0.5,6,170000,Nam Phát Groups,340,4,3
+﻿code,name,image,weight,width,height,base_price,origin,min_reserve_quantity,product_type_id,product_unit_type_id
+PRD0001,Băng thép inox,,25,14,0.03,180000,Nam Phát Groups,2000,2,3
+PRD0002,Ống inox,,7,0.2,9,140000,Nam Phát Groups,500,4,3
+PRD0003,Ống dị hình,,20,0.01,0.3,600000,Nam Phát Groups,1500,1,4
+PRD0004,Khóa đai inox,,0.3,0.2,0.02,5000,Nam Phát Groups,5000,4,4
+PRD0005,Cổng thép inox,,50,2,3,7000000,Nam Phát Groups,50,3,2
+PRD0006,Bàn thép inox,,15,2,0.7,700000,Nam Phát Groups,300,4,2
+PRD0007,Thép hộp chữ nhật inox,,18,0.2,12,320000,Nam Phát Groups,2000,3,1
+PRD0008,Thép cuộn cán nóng,,12,0.6,0.012,235000,Nam Phát Groups,500,1,4
+PRD0009,Thép cuộn cán nguội,,10,0.5,0.01,215000,Nam Phát Groups,500,3,4
+PRD0010,Thép tấm cán nóng,,12,0.6,0.012,235000,Nam Phát Groups,500,1,4
+PRD0011,Thép tấm cán nguội,,10,0.5,0.01,215000,Nam Phát Groups,500,1,4
+PRD0012,Thép cuộn mạ kẽm,,5,0.01,50,500000,Nam Phát Groups,1500,3,2
+PRD0013,Thép dây,,8,0.01,50,350000,Nam Phát Groups,1800,3,4
+PRD0014,Xà gồ C,,10,0.1,10,600000,Nam Phát Groups,2000,4,4
+PRD0015,Thép hình,,20,0.02,0.3,580000,Nam Phát Groups,1000,2,2
+PRD0016,Thép tấm chống trượt,,150,2.5,0.05,3000000,Nam Phát Groups,700,4,2
+PRD0017,Xà gồ Z thép đen,,6,0.1,10,850000,Nam Phát Groups,1500,4,1
+PRD0018,Xà gồ Z mạ kẽm,,5,0.1,10,975000,Nam Phát Groups,1500,1,2
+PRD0019,Thép thanh tròn,,3,0.03,12,250000,Nam Phát Groups,3000,2,2
+PRD0020,Thép thanh vằn,,3,0.03,12,350000,Nam Phát Groups,3000,1,1
+PRD0021,Thép góc,,15,0.2,15,450000,Nam Phát Groups,700,1,3
+PRD0022,Thép hình I,,30,0.4,15,450000,Nam Phát Groups,500,2,3
+PRD0023,Thép hình H,,30,0.6,15,520000,Nam Phát Groups,600,1,4
+PRD0024,Thép hộp vuông inox,,15,0.2,12,350000,Nam Phát Groups,1000,3,1
+PRD0025,Thép hộp tròn inox,,13,0.15,12,320000,Nam Phát Groups,1000,4,1
+PRD0026,Thép hình V,,18,0.1,15,240000,Nam Phát Groups,1000,2,2
+PRD0027,Thép hình L,,15,0.15,12,270000,Nam Phát Groups,1200,4,1
+PRD0028,Thép tròn đặc S20C,,40,0.4,12,290000,Nam Phát Groups,300,4,3
+PRD0029,Thép tròn đặc S35C,,62,0.6,12,420000,Nam Phát Groups,400,1,3
+PRD0030,Thép chế tạo 40CR,,3,0.02,15,45000,Nam Phát Groups,2000,3,1
+PRD0031,Thép chế tạo SCM440 (tròn) ,,20,0.2,6,120000,Nam Phát Groups,350,2,4
+PRD0032,Thép chế tạo SCM420,,25,0.4,6,150000,Nam Phát Groups,400,1,2
+PRD0033,Thép chế tạo SCM490,,35,0.4,6,180000,Nam Phát Groups,250,2,1
+PRD0034,Thép chế tạo SCM440 (tấm),,15,3,6,90000,Nam Phát Groups,410,3,4
+PRD0035,Thép chế tạo skd61,,20,0.5,6,120000,Nam Phát Groups,230,2,1
+PRD0036,Thép chế tạo carbon,,18,3,6,240000,Nam Phát Groups,430,2,2
+PRD0037,Thép chế tạo s45c,,20,0.5,6,170000,Nam Phát Groups,340,4,3

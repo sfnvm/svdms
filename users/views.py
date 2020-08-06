@@ -16,6 +16,8 @@ from rest_framework.decorators import api_view
 
 from rest_framework.response import Response
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from users.serializers import UserSerializer, ProfileSerializer
 from users.models import (
@@ -100,8 +102,8 @@ class UserViewSet(ModelViewSet):
     """
     Filter
     """
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['username', 'email']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['username', 'role']
 
 
 class ProfileViewSet(ModelViewSet):

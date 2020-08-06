@@ -18,9 +18,8 @@ class StorageProductDetailsSerializer(serializers.ModelSerializer):
         source='product', write_only=True,
         queryset=ProductModel.objects.order_by('id').filter(removed=False))
 
-    model = StorageProductDetailsModel
-
     class Meta:
+        model = StorageProductDetailsModel
         fields = '__all__'
 
 

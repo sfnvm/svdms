@@ -16,6 +16,7 @@ class User(AbstractUser):
 
     role = models.PositiveSmallIntegerField(
         choices=USER_TYPE_CHOICES, default=4)
+    email = models.EmailField(unique=True, blank=True)
 
 
 class Profile(models.Model):
@@ -24,7 +25,6 @@ class Profile(models.Model):
 
     # auto fields
     user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True, blank=True)
 
     # required
     # code = models.CharField(max_length=32, unique=True, blank=True)

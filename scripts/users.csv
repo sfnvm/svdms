@@ -1,0 +1,34 @@
+﻿username,password,email,first_name,last_name,role
+manager001,manager,manager001@gmail.com,Đức,Phạm,2
+manager002,manager,manager002@gmail.com,Cường,Nguyễn,2
+manager003,manager,manager003@gmail.com,Nam,Nguyễn,2
+salesman001,salesman,salesman001@gmail.com,Bán hàng 1,Nhân viên,3
+salesman002,salesman,salesman002@gmail.com,Bán hàng 2,Nhân viên,3
+salesman003,salesman,salesman003@gmail.com,Bán hàng 3,Nhân viên,3
+salesman004,salesman,salesman004@gmail.com,Bán hàng 4,Nhân viên,3
+salesman005,salesman,salesman005@gmail.com,Bán hàng 5,Nhân viên,3
+agency001,agency,agency001@gmail.com,Đại lý 1,Chi nhánh,4
+agency002,agency,agency002@gmail.com,Đại lý 2,Chi nhánh,4
+agency003,agency,agency003@gmail.com,Đại lý 3,Chi nhánh,4
+agency004,agency,agency004@gmail.com,Đại lý 4,Chi nhánh,4
+agency005,agency,agency005@gmail.com,Đại lý 5,Chi nhánh,4
+agency006,agency,agency006@gmail.com,Đại lý 6,Chi nhánh,4
+agency007,agency,agency007@gmail.com,Đại lý 7,Chi nhánh,4
+agency008,agency,agency008@gmail.com,Đại lý 8,Chi nhánh,4
+agency009,agency,agency009@gmail.com,Đại lý 9,Chi nhánh,4
+agency010,agency,agency010@gmail.com,Đại lý 10,Chi nhánh,4
+agency011,agency,agency011@gmail.com,Đại lý 11,Chi nhánh,4
+agency012,agency,agency012@gmail.com,Đại lý 12,Chi nhánh,4
+agency013,agency,agency013@gmail.com,Đại lý 13,Chi nhánh,4
+agency014,agency,agency014@gmail.com,Đại lý 14,Chi nhánh,4
+agency015,agency,agency015@gmail.com,Đại lý 15,Chi nhánh,4
+agency016,agency,agency016@gmail.com,Đại lý 16,Chi nhánh,4
+agency017,agency,agency017@gmail.com,Đại lý 17,Chi nhánh,4
+agency018,agency,agency018@gmail.com,Đại lý 18,Chi nhánh,4
+agency019,agency,agency019@gmail.com,Đại lý 19,Chi nhánh,4
+agency020,agency,agency020@gmail.com,Đại lý 20,Chi nhánh,4
+agency021,agency,agency021@gmail.com,Đại lý 21,Chi nhánh,4
+agency022,agency,agency022@gmail.com,Đại lý 22,Chi nhánh,4
+agency023,agency,agency023@gmail.com,Đại lý 23,Chi nhánh,4
+agency024,agency,agency024@gmail.com,Đại lý 24,Chi nhánh,4
+agency025,agency,agency025@gmail.com,Đại lý 25,Chi nhánh,4
