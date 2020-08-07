@@ -103,7 +103,10 @@ class UserViewSet(ModelViewSet):
     Filter
     """
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['username', 'role']
+    filterset_fields = {
+        'username': ['contains'],
+        'role': ['exact']
+    }
 
 
 class ProfileViewSet(ModelViewSet):
