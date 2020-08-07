@@ -88,3 +88,4 @@ class ProductSerializer(serializers.ModelSerializer):  # OK
     class Meta:
         model = ProductModel
         fields = '__all__'
+        # exclude = ['name_latin']
