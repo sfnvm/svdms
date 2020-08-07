@@ -7,6 +7,8 @@ from django.db.models.signals import post_save, pre_delete, post_delete, post_in
 from agencies.models import Agency as AgencyModel
 from products.models import Product as ProductModel
 
+from commons.utils import get_current_product_price
+
 
 class RequestOrder(models.Model):
     class Meta:
@@ -98,7 +100,7 @@ class RequestOrderProductDetails(models.Model):
 
 def increase_req_bill_value(sender, instance, created, **kwargs):
     if created:
-        current_price = app_utils.get_current_product_price(
+        current_price = get_current_product_price(
             instance.product.id)
         in_total = current_price * instance.amount
         instance.request_order.bill_value = instance.request_order.bill_value + in_total
@@ -134,7 +136,7 @@ class AgreedOrderProductDetails(models.Model):
 
 def increase_agr_bill_value(sender, instance, created, **kwargs):
     if created:
-        current_price = app_utils.get_current_product_price(
+        current_price = get_current_product_price(
             instance.product.id)
         in_total = current_price * instance.amount
         instance.agreed_order.bill_value = instance.agreed_order.bill_value + in_total

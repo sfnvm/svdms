@@ -1,7 +1,8 @@
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Chương trình chuyển đổi từ Tiếng Việt có dấu sang Tiếng Việt không dấu
+"""
+Chương trình chuyển đổi từ Tiếng Việt có dấu sang Tiếng Việt không dấu
 """
 
 import re

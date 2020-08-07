@@ -14,6 +14,11 @@ from orders.models import (
 from products.serializers import ProductSerializer
 from agencies.serializers import AgencySerializer
 
+from commons.utils import (
+    get_available_product_quantity,
+    get_current_product_price
+)
+
 
 class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
     product = ProductSerializer(read_only=True)
@@ -26,7 +31,7 @@ class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
         exclude = ['request_order']
 
     def validate(self, data):
-        if data['amount'] > app_utils.get_available_product_quantity(data['product_id']):
+        if data['amount'] > get_available_product_quantity(data['product_id']):
             raise serializers.ValidationError(
                 {"amount_error": "Cannot satisfy product quantity. REASON: NOT ENOUGH PRODUCT IN STORAGE",
                  "details": f"{data['product_id']}"})
@@ -83,16 +88,19 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
         for req_order in request_order_data:
             RequestOrderProductDetailsModel.objects.create(
                 request_order=request_order,
-                negotiated_price=app_utils.get_current_product_price(
+                negotiated_price=get_current_product_price(
                     req_order['product_id']),
                 **req_order)
 
         if request_order.approved:
-            max_id = AgreedOrderModel.objects.all().order_by('-id').first().id
+            try:
+                max_id = AgreedOrderModel.objects.all().order_by('-id').first().id
+            except:
+                max_id = 1
             self.approving({
                 'created_by': request_order.created_by,
                 'request_order': request_order,
-                'code': 'AGO' + str(max_id),
+                'code': 'AGO' + str(max_id + 1),
                 'details': []
             })
 
@@ -120,7 +128,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
         for req_order in request_order_data:
             RequestOrderProductDetailsModel.objects.create(
                 request_order=instance,
-                negotiated_price=app_utils.get_current_product_price(
+                negotiated_price=get_current_product_price(
                     req_order['product_id']),
                 **req_order)
 
@@ -185,14 +193,15 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 
         request_order_details = RequestOrderProductDetailsModel.objects.filter(
             request_order=validated_data['request_order'])
+        print(products_current_req)
 
         for detail in request_order_details:
             amount_can_provide = 0
-            if app_utils.get_available_product_quantity(
-                    detail.product.id) > detail.amount + products_current_req[detail.product.id]:
+            if get_available_product_quantity(
+                    detail.product.id) > detail.amount + int(products_current_req.get(detail.product.id) or 0):
                 amount_can_provide = detail.amount
             else:
-                amount_can_provide = int(app_utils.get_available_product_quantity(
+                amount_can_provide = int(get_available_product_quantity(
                     detail.product.id) * (detail.amount/(detail.amount + products_current_req[detail.product.id])))
 
             AgreedOrderProductDetailsModel.objects.create(
