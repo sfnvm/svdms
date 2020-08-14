@@ -14,7 +14,7 @@ gd_storage = GoogleDriveStorage()
 
 class ProductUnitType(models.Model):
     class Meta:
-        db_table = 'product_unit_type'
+        db_table = 'product_unit_types'
 
     # auto fields
     created_by = models.ForeignKey(
@@ -39,7 +39,7 @@ class ProductUnitType(models.Model):
 
 class ProductType(models.Model):
     class Meta:
-        db_table = 'product_type'
+        db_table = 'product_types'
 
     # auto fields
     created_by = models.ForeignKey(
@@ -109,7 +109,7 @@ pre_save.connect(pre_save_product, sender=Product)
 
 class MasterProductPrice(models.Model):
     class Meta:
-        db_table = 'master_product_price'
+        db_table = 'master_product_prices'
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,

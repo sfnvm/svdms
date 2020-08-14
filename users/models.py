@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+from gdstorage.storage import GoogleDriveStorage
+
+# Define Google Drive Storage
+gd_storage = GoogleDriveStorage()
 
 
 class User(AbstractUser):
@@ -28,8 +31,11 @@ class Profile(models.Model):
 
     # required
     # code = models.CharField(max_length=32, unique=True, blank=True)
+    avatar = models.FileField(
+        upload_to='images/', storage=gd_storage, blank=True)
     address = models.CharField(max_length=256, blank=True)
     phone_number = models.CharField(max_length=16, blank=True)
+    birthday = models.DateField(blank=True, null=True)
     gender = models.BooleanField(default=True)
 
     def __str__(self):

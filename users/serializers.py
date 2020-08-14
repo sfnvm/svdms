@@ -60,3 +60,6 @@ class UserSerializer(serializers.ModelSerializer):
             ProfileModel.objects.create(user=user, **profile_data)
 
         return user
+
+    def lock_user(self, instance, validated_data):
+        pass

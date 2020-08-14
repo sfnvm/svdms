@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls import url
 from django.contrib.auth.views import LoginView
 
@@ -84,6 +84,8 @@ urlpatterns = [
     path('', include(router.urls)),
     # Check authen
     path('auth/check/', check_token, name='check_token'),
+    # Lock user
+    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user)
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)

@@ -1,5 +1,6 @@
 import io
 import csv
+from django.db import connection
 
 from products.models import (
     ProductType,
@@ -18,6 +19,7 @@ from users.models import (
 
 def run():
     u = User.objects.get(pk=1)
+    cursor = connection.cursor()
 
     """
     USERS & PROFILES
@@ -25,6 +27,7 @@ def run():
     fhand = io.open('scripts/users.csv', 'r',
                     encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(index, row)
         if index == 0:
@@ -41,10 +44,15 @@ def run():
         )
         r.set_password(row[1])
         r.save()
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE users_id_seq RESTART WITH {};".format(count+2))
+    print("ALTER SEQUENCE users_id_seq RESTART WITH {};".format(count+2))
 
     fhand = io.open('scripts/profiles.csv', 'r',
                     encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(index, row)
         if index == 0:
@@ -58,6 +66,10 @@ def run():
                 'phone_number': row[3]
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE profiles_id_seq RESTART WITH {};".format(count+2))
+    print("ALTER SEQUENCE profiles_id_seq RESTART WITH {};".format(count+2))
 
     """
     PRODUCTS
@@ -65,6 +77,7 @@ def run():
     fhand = io.open('scripts/product_types.csv', 'r',
                     encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(index, row)
         if index == 0:
@@ -77,10 +90,15 @@ def run():
                 'created_by': u
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE product_types_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE product_types_id_seq RESTART WITH {};".format(count+1))
 
     fhand = io.open('scripts/product_unit_types.csv',
                     'r', encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(index, row)
         if index == 0:
@@ -93,10 +111,15 @@ def run():
                 'created_by': u
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE product_unit_types_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE product_unit_types_id_seq RESTART WITH {};".format(count+1))
 
     fhand = io.open('scripts/products.csv',
                     'r', encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(row)
         if index == 0:
@@ -117,6 +140,10 @@ def run():
                 'product_unit_type': ProductUnitType.objects.get(pk=row[10])
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE products_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE products_id_seq RESTART WITH {};".format(count+1))
 
     """
     STORAGE
@@ -124,6 +151,7 @@ def run():
     fhand = io.open('scripts/storages.csv',
                     'r', encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(row)
         if index == 0:
@@ -136,10 +164,15 @@ def run():
                 'created_by': u
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE storages_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE storages_id_seq RESTART WITH {};".format(count+1))
 
     fhand = io.open('scripts/storage_product_details.csv',
                     'r', encoding='utf-8-sig')
     reader = csv.reader(fhand)
+    count = 0
     for index, row in enumerate(reader):
         print(row)
         if index == 0:
@@ -152,3 +185,7 @@ def run():
                 'amount': row[2]
             }
         )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE storage_product_details_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE storage_product_details_id_seq RESTART WITH {};".format(count+1))

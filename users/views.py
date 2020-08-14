@@ -12,7 +12,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 
 from rest_framework.response import Response
 
@@ -96,7 +96,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 class UserViewSet(ModelViewSet):
     queryset = UserModel.objects.all().order_by(
-        '-date_joined').filter(is_active=True)
+        '-date_joined')
     serializer_class = UserSerializer
 
     """
@@ -105,8 +105,17 @@ class UserViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = {
         'username': ['contains'],
-        'role': ['exact']
+        'role': ['exact'],
+        'is_active': ['exact']
     }
+
+    @action(detail=True, methods=['put'])
+    def lock_user(self, request, pk=None):
+        print(pk)
+        queryset = UserModel.objects.filter(pk=pk)
+        queryset.update(is_active=False)
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ProfileViewSet(ModelViewSet):
