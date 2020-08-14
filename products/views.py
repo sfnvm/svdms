@@ -33,8 +33,8 @@ class ProductTypeViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()
 
 
 class ProductUnitPyteViewSet(ModelViewSet):
@@ -46,8 +46,8 @@ class ProductUnitPyteViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()
 
 
 class ProductViewSet(ModelViewSet):
@@ -64,8 +64,8 @@ class ProductViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()
 
 
 class MasterProductPriceViewSet(ModelViewSet):
@@ -77,5 +77,5 @@ class MasterProductPriceViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()

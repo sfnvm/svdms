@@ -23,5 +23,5 @@ class AgencyViewSet(ModelViewSet):
     #         instance.removed = True
     #         instance.save()
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()

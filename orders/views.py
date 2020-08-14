@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from orders.models import (
     RequestOrder as RequestOrderModel,
@@ -39,8 +41,12 @@ class RequestOrderViewSet(ModelViewSet):
     def perform_update(self, serializer):
         instance = serializer.save()
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()
+
+    @action(detail=True, methods=['put'])
+    def confirm(self, request, pk=None):
+        pass
 
 
 class AgreedOrderViewSet(ModelViewSet):
@@ -51,5 +57,5 @@ class AgreedOrderViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance = self.get_object()

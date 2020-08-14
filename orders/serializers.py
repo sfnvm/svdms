@@ -31,7 +31,7 @@ class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
         exclude = ['request_order']
 
     def validate(self, data):
-        if data['amount'] > get_available_product_quantity(data['product_id']):
+        if int(data['amount']) > get_available_product_quantity(data['product_id']):
             raise serializers.ValidationError(
                 {"amount_error": "Cannot satisfy product quantity. REASON: NOT ENOUGH PRODUCT IN STORAGE",
                  "details": f"{data['product_id']}"})
@@ -68,6 +68,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
         read_only_fields = ['bill_value']
 
     def approving(self, data):
+        print(data)
         AgreedOrderSerializer.create(AgreedOrderSerializer, data)
 
     def rejecting(self):
@@ -96,7 +97,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):  # OK
             try:
                 max_id = AgreedOrderModel.objects.all().order_by('-id').first().id
             except:
-                max_id = 1
+                max_id = 0
             self.approving({
                 'created_by': request_order.created_by,
                 'request_order': request_order,

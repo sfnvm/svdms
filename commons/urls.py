@@ -85,7 +85,9 @@ urlpatterns = [
     # Check authen
     path('auth/check/', check_token, name='check_token'),
     # Lock user
-    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user)
+    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
+    # Confim RQO
+    re_path(r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm)
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)

@@ -102,7 +102,7 @@ def increase_req_bill_value(sender, instance, created, **kwargs):
     if created:
         current_price = get_current_product_price(
             instance.product.id)
-        in_total = current_price * instance.amount
+        in_total = current_price * int(instance.amount)
         instance.request_order.bill_value = instance.request_order.bill_value + in_total
         instance.request_order.save()
 

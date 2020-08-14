@@ -21,5 +21,5 @@ class StorageViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    def perform_destroy(self, request):
-        instance.delete()
+    # def perform_destroy(self, request):
+    #     instance.delete()
