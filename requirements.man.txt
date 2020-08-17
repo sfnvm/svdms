@@ -27,7 +27,9 @@ whitenoise==5.1.0
 
 # extensions: main purpose == gen diagrams
 django-extensions==2.2.9
-pygraphviz==1.5 --install-option="--include-path=/usr/local/include/" --install-option="--library-path=/usr/local/lib/" pygraphviz
+# this shit keep getting error
+# pygraphviz==1.5
+# --install-option="--include-path=/usr/local/include/" --install-option="--library-path=/usr/local/lib/" pygraphviz
 
 # OTP 6 digits numb
 drfpasswordless==1.5.4

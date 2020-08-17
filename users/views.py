@@ -1,7 +1,10 @@
 import logging
+import json
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+# from django.http import JsonResponse
+from django.core import serializers as core_serializers
 
 from rest_framework import filters
 from rest_framework import status
@@ -23,6 +26,12 @@ from users.serializers import UserSerializer, ProfileSerializer
 from users.models import (
     User as UserModel,
     Profile as ProfileModel
+)
+from agencies.models import (
+    Agency as AgencyModel
+)
+from agencies.serializers import (
+    AgencySerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -84,6 +93,23 @@ class CustomObtainAuthToken(ObtainAuthToken):
         token = Token.objects.get(key=response.data['token'])
         # serialized_obj = serializers.serialize('json', token.user)
         # print(serialized_obj)
+
+        # addition infor for agency login
+        user_instance = token.user
+        agency_instance = AgencyModel.objects.filter(
+            user_related=user_instance).values()
+
+        if(agency_instance):
+            return Response({
+                'token': token.key,
+                'id': token.user_id,
+                'first_name': token.user.first_name,
+                'last_name': token.user.last_name,
+                'email': token.user.email,
+                'role': token.user.role,
+                'agency': list(agency_instance)
+            })
+
         return Response({
             'token': token.key,
             'id': token.user_id,
@@ -109,7 +135,7 @@ class UserViewSet(ModelViewSet):
         'is_active': ['exact']
     }
 
-    @action(detail=True, methods=['put'])
+    @ action(detail=True, methods=['put'])
     def lock_user(self, request, pk=None):
         print(pk)
         queryset = UserModel.objects.filter(pk=pk)
