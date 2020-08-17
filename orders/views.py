@@ -6,6 +6,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from orders.models import (
     RequestOrder as RequestOrderModel,
     AgreedOrder as AgreedOrderModel
@@ -26,6 +28,11 @@ logger = logging.getLogger(__name__)
 class RequestOrderViewSet(ModelViewSet):
     queryset = RequestOrderModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = RequestOrderSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = {
+        'agency': ['exact'],
+    }
 
     def auto_create_agreed_order(self, data):
         print('approved')
