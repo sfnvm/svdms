@@ -8,6 +8,7 @@ from agencies.models import Agency as AgencyModel
 from products.models import Product as ProductModel
 
 from commons.utils import get_current_product_price
+from commons.gencode import code_in_string
 
 
 class RequestOrder(models.Model):
@@ -37,6 +38,16 @@ class RequestOrder(models.Model):
 
     def __str__(self):
         return self.code
+
+    def save(self, *args, **kwargs):
+        id = RequestOrder.objects.count() + 1
+        if not self.code:
+            self.code = code_in_string(id, 'RQO')
+            while RequestOrder.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'RQO')
+                self.code = code_in_string(id, 'RQO')
+        super(RequestOrder, self).save()
 
 
 # This model cannot delete

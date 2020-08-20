@@ -6,6 +6,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from django_filters import rest_framework as filters
+
 from orders.models import (
     RequestOrder as RequestOrderModel,
     AgreedOrder as AgreedOrderModel
@@ -23,9 +25,19 @@ User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
+class RequestOrderFilter(filters.FilterSet):
+    f_created_at = filters.DateTimeFilter(field_name="created_at", lookup_expr='gte')
+    t_created_at = filters.DateTimeFilter(field_name="created_at", lookup_expr='lte')
+    class Meta: 
+        model = RequestOrderModel
+        fields = ['f_created_at', 't_created_at']
+
+
 class RequestOrderViewSet(ModelViewSet):
     queryset = RequestOrderModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = RequestOrderSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = RequestOrderFilter
 
     def auto_create_agreed_order(self, data):
         print('approved')
@@ -41,9 +53,6 @@ class RequestOrderViewSet(ModelViewSet):
     def perform_update(self, serializer):
         instance = serializer.save()
 
-    # def perform_destroy(self, request):
-    #     instance.delete()
-
     @action(detail=True, methods=['put'])
     def confirm(self, request, pk=None):
         pass
@@ -56,6 +65,3 @@ class AgreedOrderViewSet(ModelViewSet):
     def perform_create(self, serializer):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
-
-    # def perform_destroy(self, request):
-    #     instance = self.get_object()
