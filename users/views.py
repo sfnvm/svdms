@@ -1,10 +1,7 @@
 import logging
-import json
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-# from django.http import JsonResponse
-from django.core import serializers as core_serializers
 
 from rest_framework import filters
 from rest_framework import status
@@ -135,7 +132,7 @@ class UserViewSet(ModelViewSet):
         'is_active': ['exact']
     }
 
-    @ action(detail=True, methods=['put'])
+    @action(detail=True, methods=['put'])
     def lock_user(self, request, pk=None):
         print(pk)
         queryset = UserModel.objects.filter(pk=pk)

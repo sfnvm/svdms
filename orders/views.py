@@ -26,11 +26,16 @@ logger = logging.getLogger(__name__)
 
 
 class RequestOrderFilter(filters.FilterSet):
-    f_created_at = filters.DateTimeFilter(field_name="created_at", lookup_expr='gte')
-    t_created_at = filters.DateTimeFilter(field_name="created_at", lookup_expr='lte')
-    class Meta: 
+    f_created_at = filters.DateTimeFilter(
+        field_name="created_at", lookup_expr='gte')
+    t_created_at = filters.DateTimeFilter(
+        field_name="created_at", lookup_expr='lte')
+
+    class Meta:
         model = RequestOrderModel
-        fields = ['f_created_at', 't_created_at']
+        fields = {
+            'agency': ['exact'],
+        }
 
 
 class RequestOrderViewSet(ModelViewSet):
