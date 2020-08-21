@@ -20,7 +20,6 @@ from orders.serializers import (
     AgreedOrderProductDetailsSerializer
 )
 
-# Libs instance
 User = get_user_model()
 logger = logging.getLogger(__name__)
 

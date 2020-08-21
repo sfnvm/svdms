@@ -8,7 +8,6 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-# from quickstart import views as app_views
 from users.views import (
     CustomObtainAuthToken,  # Tokens
     LoginView,              # Sessions
@@ -63,7 +62,7 @@ router.register(r'product-unit-types', ProductUnitPyteViewSet)
 router.register(r'storages', StorageViewSet)
 
 urlpatterns = [
-    # Swagger endpoints
+    # Swagger
     url(r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'),
@@ -73,16 +72,14 @@ urlpatterns = [
     url(r'^redoc/$',
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
-    # Get token
+
     path(r'auth/', CustomObtainAuthToken.as_view(), name='api_token'),
-    # Session token
-    # path(r'login/', LoginView.as_view(), name='login'),
     path(r'login/', LoginView.as_view(), name='login'),
+
     # OTP
     path('', include('drfpasswordless.urls')),
-    # API endpoints with Router
     path('', include(router.urls)),
-    # Check authen
+
     path('auth/check/', check_token, name='check_token'),
     # Lock user
     re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
@@ -91,7 +88,7 @@ urlpatterns = [
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)
-    # url(r'users/', UserViewSet.as_view(), name='user'),
+    #
     # Optional Group endpoints (use APIView to override)
     #
     # Optional Agency endpoints (use APIView to override)

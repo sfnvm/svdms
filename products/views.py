@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import filters
+from rest_framework.filters import SearchFilter
 
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 
@@ -33,9 +33,6 @@ class ProductTypeViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    # def perform_destroy(self, request):
-    #     instance.delete()
-
 
 class ProductUnitPyteViewSet(ModelViewSet):
     queryset = ProductUnitTypeModel.objects.all().order_by(
@@ -46,15 +43,12 @@ class ProductUnitPyteViewSet(ModelViewSet):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
 
-    # def perform_destroy(self, request):
-    #     instance.delete()
-
 
 class ProductViewSet(ModelViewSet):
     queryset = ProductModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = ProductSerializer
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend, )
     filterset_fields = {
         'product_type_id': ['exact'],
         'name_latin': ['contains']
@@ -63,9 +57,6 @@ class ProductViewSet(ModelViewSet):
     def perform_create(self, serializer):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
-
-    # def perform_destroy(self, request):
-    #     instance.delete()
 
 
 class MasterProductPriceViewSet(ModelViewSet):
@@ -76,6 +67,3 @@ class MasterProductPriceViewSet(ModelViewSet):
     def perform_create(self, serializer):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
-
-    # def perform_destroy(self, request):
-    #     instance.delete()

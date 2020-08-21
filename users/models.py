@@ -19,18 +19,15 @@ class User(AbstractUser):
 
     role = models.PositiveSmallIntegerField(
         choices=USER_TYPE_CHOICES, default=4)
-    email = models.EmailField(unique=True, blank=True)
+    email = models.EmailField(unique=True, blank=True, null=False)
 
 
 class Profile(models.Model):
     class Meta:
         db_table = 'profiles'
 
-    # auto fields
     user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
 
-    # required
-    # code = models.CharField(max_length=32, unique=True, blank=True)
     avatar = models.FileField(
         upload_to='images/', storage=gd_storage, blank=True)
     address = models.CharField(max_length=256, blank=True)

@@ -3,8 +3,8 @@ import logging
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 
-from rest_framework import filters
 from rest_framework import status
+from rest_framework.filters import SearchFilter
 
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
@@ -122,15 +122,13 @@ class UserViewSet(ModelViewSet):
         '-date_joined')
     serializer_class = UserSerializer
 
-    """
-    Filter
-    """
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend, SearchFilter, )
     filterset_fields = {
         'username': ['contains'],
         'role': ['exact'],
         'is_active': ['exact']
     }
+    search_fields = ['username', 'email']
 
     @action(detail=True, methods=['put'])
     def lock_user(self, request, pk=None):

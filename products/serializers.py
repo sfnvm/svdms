@@ -16,25 +16,25 @@ from orders.models import (
 )
 
 
-class ProductTypeSerializer(serializers.ModelSerializer):  # OK
+class ProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductTypeModel
         fields = '__all__'
 
 
-class ProductUnitTypeSerializer(serializers.ModelSerializer):  # OK
+class ProductUnitTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductUnitTypeModel
         fields = '__all__'
 
 
-class MasterProductPriceSerializer(serializers.ModelSerializer):  # OK
+class MasterProductPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = MasterProductPriceModel
         fields = '__all__'
 
 
-class ProductSerializer(serializers.ModelSerializer):  # OK
+class ProductSerializer(serializers.ModelSerializer):
     product_type = ProductTypeSerializer(read_only=True)
     product_type_id = serializers.PrimaryKeyRelatedField(
         source='product_type', write_only=True,

@@ -26,11 +26,9 @@ class RequestOrder(models.Model):
     bill_value = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
 
-    # permission required
     approved = models.BooleanField(default=False)
     approved_at = models.DateTimeField(blank=True, null=True)
 
-    # permission required
     rejected = models.BooleanField(default=False)
     rejected_at = models.DateTimeField(blank=True, null=True)
 
@@ -50,7 +48,6 @@ class RequestOrder(models.Model):
         super(RequestOrder, self).save()
 
 
-# This model cannot delete
 class AgreedOrder(models.Model):
     class Meta:
         db_table = 'agreed_orders'
@@ -64,11 +61,10 @@ class AgreedOrder(models.Model):
         AgencyModel, on_delete=models.CASCADE, blank=True)
     request_order = models.ForeignKey(
         RequestOrder, on_delete=models.CASCADE, blank=True)
-    code = models.CharField(max_length=32, unique=True, blank=True)
+    code = models.CharField(max_length=32, unique=True, blank=True, null=False)
     bill_value = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
 
-    # permission required
     approved = models.BooleanField(default=False)
     approved_on = models.DateTimeField(blank=True, null=True)
 
@@ -78,15 +74,12 @@ class AgreedOrder(models.Model):
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(blank=True, null=True)
 
-    # permission required
     planned_for_delivery = models.BooleanField(default=False)
     expected_delivery_on = models.DateTimeField(blank=True, null=True)
 
-    # permission required
     delivered = models.BooleanField(default=False)
     delivered_on = models.DateTimeField(blank=True, null=True)
 
-    # PERMISSION REQUIRED
     paid = models.BooleanField(default=False)
     paid_on = models.DateTimeField(blank=True, null=True)
 
@@ -97,7 +90,6 @@ class RequestOrderProductDetails(models.Model):
     class Meta:
         db_table = 'request_order_product_details'
 
-    # auto fields
     created_at = models.DateTimeField(auto_now_add=True)
 
     request_order = models.ForeignKey(
@@ -132,7 +124,6 @@ class AgreedOrderProductDetails(models.Model):
     class Meta:
         db_table = 'agreed_order_product_details'
 
-    # auto fields
     created_at = models.DateTimeField(auto_now_add=True)
 
     agreed_order = models.ForeignKey(

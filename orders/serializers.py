@@ -20,7 +20,7 @@ from commons.utils import (
 )
 
 
-class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
+class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
         source='product', write_only=True,
@@ -38,7 +38,7 @@ class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
         return data
 
 
-class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
+class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
         source='product', write_only=True,
@@ -49,7 +49,7 @@ class AgreedOrderProductDetailsSerializer(serializers.ModelSerializer):  # OK
         fields = '__all__'
 
 
-class RequestOrderSerializer(serializers.ModelSerializer):  # OK
+class RequestOrderSerializer(serializers.ModelSerializer):
     created_by = serializers.StringRelatedField(
         default=serializers.CurrentUserDefault(), read_only=True)
 

@@ -8,7 +8,6 @@ class Storage(models.Model):
     class Meta:
         db_table = 'storages'
 
-    # auto fields
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
         related_name="%(class)s_created_by"
@@ -28,7 +27,6 @@ class StorageProductDetails(models.Model):
     class Meta:
         db_table = 'storage_product_details'
 
-    # auto fields
     created_at = models.DateTimeField(auto_now_add=True)
 
     storage = models.ForeignKey(Storage, on_delete=models.CASCADE)

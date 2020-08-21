@@ -24,12 +24,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-
-        # Can't have 'fields' and 'exclude' at the same time
         fields = '__all__'
         read_only_fields = ('date_joined', 'is_superuser',
                             'is_staff', 'is_active')
-        # exclude = ('',)
         extra_kwargs = {
             'password': {'write_only': True}
         }

@@ -5,13 +5,13 @@ from django.contrib.auth.models import (
 )
 
 
-class GroupSerializer(serializers.ModelSerializer):  # OK no need it yet
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = '__all__'
 
 
-class PermissionSerializer(serializers.ModelSerializer):  # OK no need it yet
+class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = '__all__'

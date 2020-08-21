@@ -6,7 +6,6 @@ class Agency(models.Model):
     class Meta:
         db_table = 'agencies'
 
-    # auto field
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=False,
         related_name="%(class)s_created_by"
@@ -40,7 +39,6 @@ class Agency(models.Model):
         default=NORMAL
     )
 
-    # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,

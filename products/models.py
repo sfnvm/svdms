@@ -8,7 +8,6 @@ from gdstorage.storage import GoogleDriveStorage
 
 from commons.convert_vietnamese import no_accent_vietnamese
 
-# Define Google Drive Storage
 gd_storage = GoogleDriveStorage()
 
 
@@ -16,7 +15,6 @@ class ProductUnitType(models.Model):
     class Meta:
         db_table = 'product_unit_types'
 
-    # auto fields
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
         related_name="%(class)s_created_by"
@@ -26,7 +24,6 @@ class ProductUnitType(models.Model):
     code = models.CharField(max_length=32, unique=True, blank=True)
     unit_type = models.CharField(max_length=128, unique=True, blank=True)
 
-    # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
@@ -41,7 +38,6 @@ class ProductType(models.Model):
     class Meta:
         db_table = 'product_types'
 
-    # auto fields
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
         related_name="%(class)s_created_by"
@@ -51,7 +47,6 @@ class ProductType(models.Model):
     code = models.CharField(max_length=32, unique=True, blank=True)
     product_type = models.CharField(max_length=128, unique=True, blank=True)
 
-    # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
@@ -63,7 +58,6 @@ class Product(models.Model):
     class Meta:
         db_table = 'products'
 
-    # auto fields
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_created_by"
@@ -75,7 +69,6 @@ class Product(models.Model):
     product_unit_type = models.ForeignKey(
         ProductUnitType, on_delete=models.CASCADE, blank=True)
 
-    # info
     code = models.CharField(max_length=32, unique=True, blank=True)
     name = models.CharField(max_length=256, blank=True)
     name_latin = models.CharField(max_length=256, blank=True,)
@@ -89,7 +82,6 @@ class Product(models.Model):
 
     min_reserve_quantity = models.IntegerField(default=0)
 
-    # permission required
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
