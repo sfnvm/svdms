@@ -31,6 +31,8 @@ from agencies.serializers import (
     AgencySerializer
 )
 
+from commons import mails_worker
+
 logger = logging.getLogger(__name__)
 
 
@@ -95,6 +97,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user_instance = token.user
         agency_instance = AgencyModel.objects.filter(
             user_related=user_instance).values()
+
+        # mails_worker.test('trungpt.dev@gmail.com', user_instance.username)
 
         if(agency_instance):
             return Response({

@@ -14,9 +14,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = ProfileModel
         exclude = ['user']
         # duplicate error when update unique field with the same data
-        # extra_kwargs = {
-        #     'code': {'validators': []},
-        # }
+        extra_kwargs = {
+            'code': {'validators': []},
+        }
 
 
 class UserSerializer(serializers.ModelSerializer):

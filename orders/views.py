@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 
 from django_filters import rest_framework as filters
 
@@ -40,8 +41,9 @@ class RequestOrderFilter(filters.FilterSet):
 class RequestOrderViewSet(ModelViewSet):
     queryset = RequestOrderModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = RequestOrderSerializer
-    filter_backends = (filters.DjangoFilterBackend, )
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter, )
     filterset_class = RequestOrderFilter
+    search_fields = ['code']
 
     def auto_create_agreed_order(self, data):
         print('approved')

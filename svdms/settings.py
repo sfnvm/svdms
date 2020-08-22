@@ -127,6 +127,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'svdms.wsgi.application'
 
 
@@ -169,7 +170,17 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 # Dummy development SMTP server (test only)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Real SMTP one (shouldn't public this, but I've no time for this)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dmsnamphat@gmail.com'
+EMAIL_HOST_PASSWORD = 'magicturtle'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSH = False
+
 EMAIL_FILE_PATH = '/tmp/app-messages'  # change this to a proper location
 
 # Passwordless OTP
