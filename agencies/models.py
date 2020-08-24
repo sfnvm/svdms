@@ -1,8 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-from areas.models import Area as AreaModel
-
 from commons.gencode import code_in_string
 
 

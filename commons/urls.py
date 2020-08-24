@@ -85,7 +85,9 @@ urlpatterns = [
     re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
     # Confim RQO
     re_path(
-        r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm)
+        r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm),
+    re_path(
+        r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.reject),
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)
@@ -99,4 +101,5 @@ urlpatterns = [
     # Optional Storage endpoints (use APIView to override)
     #
     # Optional Order endpoints (use APIView to override)
+    re_path(r'^agreed-orders/$', AgreedOrderViewSet.agreed_order_agency)
 ]

@@ -58,14 +58,23 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         source='agency', write_only=True,
         queryset=AgencyModel.objects.order_by('id').filter(removed=False))
 
-    requestorderproductdetails_set = RequestOrderProductDetailsSerializer(
-        many=True, read_only=True)
+    request_order_details = RequestOrderProductDetailsSerializer(source='requestorderproductdetails_set',
+                                                                 many=True, read_only=True)
     details = serializers.JSONField(write_only=True)
 
     class Meta:
         model = RequestOrderModel
         fields = '__all__'
+        depth = 3
         read_only_fields = ['bill_value']
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.prefetch_related(
+            'requestorderproductdetails_set',
+            'requestorderproductdetails_set__product'
+        )
+        return queryset
 
     def approving(self, user, data):
         data.approved = True
@@ -137,6 +146,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         result = RequestOrderModel.objects.filter(id=instance.id).first()
 
         if result.approved:
+            print(validated_data)
             self.approving(validated_data['created_by'], result)
 
         return result
@@ -210,5 +220,5 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 
         return agreed_order
 
-    def update(self, instance, validated_data):
-        pass
+    # def update(self, instance, validated_data):
+    #     pass

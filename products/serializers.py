@@ -48,6 +48,15 @@ class ProductSerializer(serializers.ModelSerializer):
     current_price = serializers.SerializerMethodField()
     available_quantity = serializers.SerializerMethodField()
 
+    class Meta:
+        model = ProductModel
+        # fields = '__all__'
+        exclude = ['name_latin']
+        read_only_fields = ['iamge_url']
+        extra_kwargs = {
+            'image': {'write_only': True}
+        }
+
     def get_current_price(self, obj):
         master_price = MasterProductPriceModel.objects.filter(
             product=obj, removed=False).order_by('created_at').reverse()
@@ -84,8 +93,3 @@ class ProductSerializer(serializers.ModelSerializer):
                 pass
         except KeyError:
             pass
-
-    class Meta:
-        model = ProductModel
-        fields = '__all__'
-        # exclude = ['name_latin']

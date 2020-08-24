@@ -74,7 +74,8 @@ class Product(models.Model):
     code = models.CharField(max_length=32, unique=True,
                             blank=True, null=False)
     name = models.CharField(max_length=256, blank=True)
-    name_latin = models.CharField(max_length=256, blank=True,)
+    name_latin = models.CharField(max_length=256, blank=True)
+    image_url = models.CharField(max_length=256, blank=True)
     image = models.FileField(
         upload_to='images/', storage=gd_storage, blank=True)
     weight = models.DecimalField(max_digits=9, decimal_places=5, default=0)
@@ -91,6 +92,12 @@ class Product(models.Model):
         related_name="%(class)s_removed_by"
     )
 
+    # @property
+    # def image_url(self):
+    #     if self.image:
+    #         return self.image.url
+    #     return ''  # or some default
+
     def __str__(self):
         return self.code
 
@@ -103,6 +110,10 @@ class Product(models.Model):
                 id += 1
                 temp = code_in_string(id, 'AGO')
                 self.code = code_in_string(id, 'AGO')
+        if self.image:
+            self.image_url = self.image.url
+        else:
+            self.image_url = ''
         super(Product, self).save()
 
 
