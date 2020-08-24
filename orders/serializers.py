@@ -1,7 +1,7 @@
-from rest_framework import serializers
-from django.dispatch import receiver
+from django.utils import timezone
 
-from django.db.models.signals import post_save, pre_delete, post_delete, post_init
+from rest_framework import serializers
+
 from products.models import Product as ProductModel
 from agencies.models import Agency as AgencyModel
 from orders.models import (
@@ -67,14 +67,24 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['bill_value']
 
-    def approving(self, data):
-        print(data)
-        AgreedOrderSerializer.create(AgreedOrderSerializer, data)
+    def approving(self, user, data):
+        data.approved = True
+        data.approved_at = timezone.now()
+        data.save()
+        instance = {
+            'created_by': user,
+            'request_order': data,
+            'details': []
+        }
+        result = AgreedOrderSerializer.create(AgreedOrderSerializer, instance)
+        print(result)
+        return data
 
     def rejecting(self):
         pass
 
     def create(self, validated_data):
+        print(validated_data)
         request_order_data = validated_data.pop('details')
 
         # Validated amount
@@ -94,16 +104,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):
                 **req_order)
 
         if request_order.approved:
-            try:
-                max_id = AgreedOrderModel.objects.all().order_by('-id').first().id
-            except:
-                max_id = 0
-            self.approving({
-                'created_by': request_order.created_by,
-                'request_order': request_order,
-                'code': 'AGO' + str(max_id + 1),
-                'details': []
-            })
+            self.approving(validated_data['created_by'], request_order)
 
         return request_order
 
@@ -136,13 +137,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         result = RequestOrderModel.objects.filter(id=instance.id).first()
 
         if result.approved:
-            max_id = AgreedOrderModel.objects.all().order_by('-id').first().id
-            self.approving({
-                'created_by': result.created_by,
-                'request_order': result,
-                'code': 'AGO' + str(max_id),
-                'details': []
-            })
+            self.approving(validated_data['created_by'], result)
 
         return result
 
@@ -156,16 +151,16 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
     #     source='agency', write_only=True,
     #     queryset=AgencyModel.objects.order_by('id').filter(removed=False))
 
-    request_order = RequestOrderSerializer(read_only=True)
-    request_order_id = serializers.PrimaryKeyRelatedField(
-        source='request_order', write_only=True,
-        queryset=RequestOrderModel.objects.order_by(
-            'id').filter(removed=False))
+    # request_order = RequestOrderSerializer(read_only=True)
+    # request_order_id = serializers.PrimaryKeyRelatedField(
+    #     source='request_order', write_only=True,
+    #     queryset=RequestOrderModel.objects.order_by(
+    #         'id').filter(removed=False))
 
     agreedorderproductdetails_set = AgreedOrderProductDetailsSerializer(
         many=True, read_only=True)
-    details = serializers.JSONField(
-        write_only=True)
+    # details = serializers.JSONField(
+    #     write_only=True)
 
     class Meta:
         model = AgreedOrderModel
@@ -173,9 +168,10 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
         read_only_fields = ['bill_value']
 
     def create(self, validated_data):
+        print(validated_data)
         agreed_order_data = validated_data.pop('details')
         agreed_order = AgreedOrderModel.objects.create(agency=validated_data['request_order'].agency,
-                                                       **validated_data)
+                                                       ** validated_data)
 
         # get all req order current in new stage
         unprocessed_request_orders = RequestOrderModel.objects.order_by(

@@ -42,3 +42,6 @@ django-filter==2.3.0
 
 # Django GG Drive || Cloud storage maybe ?
 django-googledrive-storage==1.5.2
+
+# Django Rest Password Reset
+django-rest-passwordreset==1.1.0

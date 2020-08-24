@@ -3,6 +3,8 @@ from django.conf import settings
 
 from products.models import Product
 
+from commons.gencode import code_in_string
+
 
 class Storage(models.Model):
     class Meta:
@@ -21,6 +23,16 @@ class Storage(models.Model):
 
     def __str__(self):
         return self.code
+
+    def save(self, *args, **kwargs):
+        id = Storage.objects.count() + 1
+        if not self.code:
+            self.code = code_in_string(id, 'STG')
+            while Storage.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'STG')
+                self.code = code_in_string(id, 'STG')
+        super(Storage, self).save()
 
 
 class StorageProductDetails(models.Model):

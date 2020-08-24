@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
 
+from areas.models import Area as AreaModel
+
+from commons.gencode import code_in_string
+
 
 class Agency(models.Model):
     class Meta:
@@ -47,3 +51,13 @@ class Agency(models.Model):
 
     def __str__(self):
         return self.code
+
+    def save(self, *args, **kwargs):
+        id = Agency.objects.count() + 1
+        if not self.code:
+            self.code = code_in_string(id, 'AGC')
+            while Agency.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'AGC')
+                self.code = code_in_string(id, 'AGC')
+        super(Agency, self).save()

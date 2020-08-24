@@ -7,6 +7,7 @@ from django.db.models.signals import pre_save
 from gdstorage.storage import GoogleDriveStorage
 
 from commons.convert_vietnamese import no_accent_vietnamese
+from commons.gencode import code_in_string
 
 gd_storage = GoogleDriveStorage()
 
@@ -21,7 +22,8 @@ class ProductUnitType(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    code = models.CharField(max_length=32, unique=True, blank=True)
+    code = models.CharField(max_length=32, unique=True,
+                            blank=False, null=False)
     unit_type = models.CharField(max_length=128, unique=True, blank=True)
 
     removed = models.BooleanField(default=False)
@@ -69,7 +71,8 @@ class Product(models.Model):
     product_unit_type = models.ForeignKey(
         ProductUnitType, on_delete=models.CASCADE, blank=True)
 
-    code = models.CharField(max_length=32, unique=True, blank=True)
+    code = models.CharField(max_length=32, unique=True,
+                            blank=True, null=False)
     name = models.CharField(max_length=256, blank=True)
     name_latin = models.CharField(max_length=256, blank=True,)
     image = models.FileField(
@@ -90,6 +93,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.code
+
+    def save(self, *args, **kwargs):
+        id = Product.objects.count() + 1
+        print(self)
+        if not self.code:
+            self.code = code_in_string(id, 'AGO')
+            while Product.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'AGO')
+                self.code = code_in_string(id, 'AGO')
+        super(Product, self).save()
 
 
 def pre_save_product(sender, instance, **kwargs):

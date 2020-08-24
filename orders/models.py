@@ -59,7 +59,7 @@ class AgreedOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     agency = models.ForeignKey(
         AgencyModel, on_delete=models.CASCADE, blank=True)
-    request_order = models.ForeignKey(
+    request_order = models.OneToOneField(
         RequestOrder, on_delete=models.CASCADE, blank=True)
     code = models.CharField(max_length=32, unique=True, blank=True, null=False)
     bill_value = models.DecimalField(
@@ -84,6 +84,19 @@ class AgreedOrder(models.Model):
     paid_on = models.DateTimeField(blank=True, null=True)
 
     removed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.code
+
+    def save(self, *args, **kwargs):
+        id = AgreedOrder.objects.count() + 1
+        if not self.code:
+            self.code = code_in_string(id, 'AGO')
+            while AgreedOrder.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'AGO')
+                self.code = code_in_string(id, 'AGO')
+        super(AgreedOrder, self).save()
 
 
 class RequestOrderProductDetails(models.Model):

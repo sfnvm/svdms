@@ -6,6 +6,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
+from rest_framework import status
+
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 from django_filters import rest_framework as filters
 
@@ -35,11 +39,13 @@ class RequestOrderFilter(filters.FilterSet):
         model = RequestOrderModel
         fields = {
             'agency': ['exact'],
+            'approved': ['exact']
         }
 
 
 class RequestOrderViewSet(ModelViewSet):
-    queryset = RequestOrderModel.objects.all().order_by('id').filter(removed=False)
+    queryset = RequestOrderModel.objects.all().order_by(
+        'created_at').filter(removed=False)
     serializer_class = RequestOrderSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter, )
     filterset_class = RequestOrderFilter
@@ -61,12 +67,36 @@ class RequestOrderViewSet(ModelViewSet):
 
     @action(detail=True, methods=['put'])
     def confirm(self, request, pk=None):
-        pass
+        req_order = RequestOrderModel.objects.filter(pk=pk).first()
+        if(not req_order.approved):
+            queryset = RequestOrderModel.objects.filter(pk=pk)
+            serialzer = RequestOrderSerializer(queryset)
+            result = serialzer.approving(request.user, queryset.first())
+            return Response(RequestOrderSerializer(result).data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class AgreedOrderFilter(filters.FilterSet):
+    class Meta:
+        model = AgreedOrderModel
+        fields = {
+            'accepted': ['exact'],
+            'rejected': ['exact'],
+            'approved': ['exact'],
+            'planned_for_delivery': ['exact'],
+            'delivered': ['exact'],
+            'paid': ['exact'],
+        }
 
 
 class AgreedOrderViewSet(ModelViewSet):
-    queryset = AgreedOrderModel.objects.all().order_by('id').filter(removed=False)
+    queryset = AgreedOrderModel.objects.all().order_by(
+        'created_at').filter(removed=False)
     serializer_class = AgreedOrderSerializer
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter, )
+    filterset_class = AgreedOrderFilter
+    search_fields = ['code']
 
     def perform_create(self, serializer):
         req = serializer.context['request']
