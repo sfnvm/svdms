@@ -48,11 +48,12 @@ class ProductViewSet(ModelViewSet):
     queryset = ProductModel.objects.all().order_by('id').filter(removed=False)
     serializer_class = ProductSerializer
 
-    filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend, SearchFilter, )
     filterset_fields = {
         'product_type_id': ['exact'],
-        'name_latin': ['contains']
+        'code': ['exact']
     }
+    search_fields = ['name_latin', 'code']
 
     def perform_create(self, serializer):
         req = serializer.context['request']
