@@ -5,8 +5,6 @@ from django.contrib.auth.views import LoginView
 from rest_framework import routers
 from rest_framework import permissions
 
-from rest_framework_nested import routers as router_nested
-
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -15,7 +13,6 @@ from users.views import (
     LoginView,              # Sessions
     UserViewSet,
     ProfileViewSet,
-    check_token,
 )
 from permissions.views import (
     GroupViewSet,
@@ -77,39 +74,11 @@ urlpatterns = [
         schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'),
 
+    # Auth
     path(r'auth/', CustomObtainAuthToken.as_view(), name='api_token'),
     path(r'login/', LoginView.as_view(), name='login'),
 
-    # OTP
+    # OTP || TODO Custom auth endpoint
     path('', include('drfpasswordless.urls')),
     path('', include(router.urls)),
-
-    path('auth/check/', check_token, name='check_token'),
-    # Lock user
-    # re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
-    # # Reactivate user
-    # re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.reactivate),
-    # Confim RQO
-    # re_path(
-    #     r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm),
-    # re_path(
-    #     r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.reject),
-    # Grant permission
-    #
-    # Optional User endpoints (use APIView to override)
-    #
-    # Optional Group endpoints (use APIView to override)
-    #
-    # Optional Agency endpoints (use APIView to override)
-    #
-    # Optional Product endpoints (use APIView to override)
-    #
-    # Optional Storage endpoints (use APIView to override)
-    #
-    # Optional Order endpoints (use APIView to override)
-    # re_path(r'^agreed-orders/$', AgreedOrderViewSet.current_agency),
-    # re_path(
-    #     r'agreed-orders/^(?P<pk>[0-9]+)/$', AgreedOrderViewSet.agency_approve),
-    # re_path(
-    #     r'agreed-orders/^(?P<pk>[0-9]+)/$', AgreedOrderViewSet.agency_reject)
 ]

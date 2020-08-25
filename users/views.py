@@ -36,15 +36,6 @@ from commons import mails_worker
 logger = logging.getLogger(__name__)
 
 
-@api_view(['GET'])  # simple endpoint to check credential
-def check_token(request):
-    """
-    Check token
-    """
-    content = {'details': 'Token is OK!'}
-    return Response(content)
-
-
 @api_view
 def get_current_profile(request):  # Need it?
     pass
@@ -67,7 +58,7 @@ class LoginView(APIView):  # Session login
             if user.is_active:
                 # Care for the session
                 login(request, user)
-                # se the expiration to 0 if remember wasn't requested
+                # see the expiration to 0 if remember wasn't requested
 
                 # if not remember:
                 #     request.session.set_expiry(0)
@@ -110,7 +101,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
                 'role': token.user.role,
                 'agency': list(agency_instance)
             })
-
         return Response({
             'token': token.key,
             'id': token.user_id,
@@ -134,6 +124,7 @@ class UserViewSet(ModelViewSet):
     }
     search_fields = ['username', 'email']
 
+    # Custom action to lockuser by id
     @action(detail=True, methods=['put'])
     def lock_user(self, request, pk=None):
         queryset = UserModel.objects.filter(pk=pk)
@@ -141,6 +132,7 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data[0])
 
+    # Custom action to reactivate user by id
     @action(detail=True, methods=['put'])
     def reactivate(self, request, pk=None):
         queryset = UserModel.objects.filter(pk=pk)
