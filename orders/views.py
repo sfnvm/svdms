@@ -142,7 +142,8 @@ class AgreedOrderViewSet(ModelViewSet):
         print(request)
 
     @action(detail=True, methods=['put'])
-    def agency_approve(self, request, pk=None):
+    def agency_accept(self, request, pk=None):
+        print(pk)
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
         ago_order = AgreedOrderModel.objects.filter(
@@ -161,6 +162,7 @@ class AgreedOrderViewSet(ModelViewSet):
 
     @action(detail=True, methods=['put'])
     def agency_reject(self, request, pk=None):
+        print(pk)
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
         ago_order = AgreedOrderModel.objects.filter(
@@ -176,10 +178,6 @@ class AgreedOrderViewSet(ModelViewSet):
 
         serializer = self.get_serializer(ago_order, many=False)
         return Response(serializer.data)
-
-    @action(detail=True, methods=['put'])
-    def agency_reject(self, request):
-        print(request)
 
     @action(detail=True, methods=['put'])
     def approve(self, request):

@@ -5,6 +5,8 @@ from django.contrib.auth.views import LoginView
 from rest_framework import routers
 from rest_framework import permissions
 
+from rest_framework_nested import routers as router_nested
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -84,14 +86,14 @@ urlpatterns = [
 
     path('auth/check/', check_token, name='check_token'),
     # Lock user
-    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
-    # Reactivate user
-    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.reactivate),
+    # re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
+    # # Reactivate user
+    # re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.reactivate),
     # Confim RQO
-    re_path(
-        r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm),
-    re_path(
-        r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.reject),
+    # re_path(
+    #     r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm),
+    # re_path(
+    #     r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.reject),
     # Grant permission
     #
     # Optional User endpoints (use APIView to override)
@@ -105,9 +107,9 @@ urlpatterns = [
     # Optional Storage endpoints (use APIView to override)
     #
     # Optional Order endpoints (use APIView to override)
-    re_path(r'^agreed-orders/$', AgreedOrderViewSet.current_agency),
-    re_path(r'^agreed-orders/^(?P<pk>[0-9]+)/$',
-            AgreedOrderViewSet.agency_approve)
-    re_path(r'^agreed-orders/^(?P<pk>[0-9]+)/$',
-            AgreedOrderViewSet.agency_reject)
+    # re_path(r'^agreed-orders/$', AgreedOrderViewSet.current_agency),
+    # re_path(
+    #     r'agreed-orders/^(?P<pk>[0-9]+)/$', AgreedOrderViewSet.agency_approve),
+    # re_path(
+    #     r'agreed-orders/^(?P<pk>[0-9]+)/$', AgreedOrderViewSet.agency_reject)
 ]
