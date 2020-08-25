@@ -15,6 +15,9 @@ from users.models import (
     User,
     Profile
 )
+from agencies.models import (
+    Agency
+)
 
 
 def run():
@@ -146,6 +149,35 @@ def run():
     print("ALTER SEQUENCE products_id_seq RESTART WITH {};".format(count+1))
 
     """
+    AGENCY
+    """
+    fhand = io.open('scripts/agencies.csv',
+                    'r', encoding='utf-8-sig')
+    reader = csv.reader(fhand)
+    count = 0
+    for index, row in enumerate(reader):
+        print(row)
+        if index == 0:
+            continue
+        user_related = User.objects.get(row[5])
+        r, created = Agency.objects.update_or_create(
+            id=index,
+            defaults={
+                'code': row[0],
+                'name': row[1],
+                'address': row[2],
+                'phone_number': row[3],
+                'priority_level': row[4],
+                'user_related': user_related,
+                'created_by': u
+            }
+        )
+        count += 1
+    cursor.execute(
+        "ALTER SEQUENCE agencies_id_seq RESTART WITH {};".format(count+1))
+    print("ALTER SEQUENCE agencies_id_seq RESTART WITH {};".format(count+1))
+
+    """
     STORAGE
     """
     fhand = io.open('scripts/storages.csv',
@@ -169,6 +201,9 @@ def run():
         "ALTER SEQUENCE storages_id_seq RESTART WITH {};".format(count+1))
     print("ALTER SEQUENCE storages_id_seq RESTART WITH {};".format(count+1))
 
+    """
+    STORAGE_DETAILS
+    """
     fhand = io.open('scripts/storage_product_details.csv',
                     'r', encoding='utf-8-sig')
     reader = csv.reader(fhand)
