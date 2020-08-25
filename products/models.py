@@ -22,9 +22,9 @@ class ProductUnitType(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    code = models.CharField(max_length=32, unique=True,
-                            blank=False, null=False)
-    unit_type = models.CharField(max_length=128, unique=True, blank=True)
+    code = models.CharField(max_length=32, unique=True, blank=True, null=False)
+    unit_type = models.CharField(
+        max_length=128, unique=True, blank=True, null=False)
 
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
@@ -57,8 +57,9 @@ class ProductType(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    code = models.CharField(max_length=32, unique=True, blank=True)
-    product_type = models.CharField(max_length=128, unique=True, blank=True)
+    code = models.CharField(max_length=32, unique=True, blank=True, null=False)
+    product_type = models.CharField(
+        max_length=128, unique=True, blank=True, null=False)
 
     removed = models.BooleanField(default=False)
     removed_by = models.ForeignKey(
@@ -121,11 +122,11 @@ class Product(models.Model):
         id = Product.objects.count() + 1
         print(self)
         if not self.code:
-            self.code = code_in_string(id, 'AGO')
+            self.code = code_in_string(id, 'PRD')
             while Product.objects.filter(code=self.code).exists():
                 id += 1
-                temp = code_in_string(id, 'AGO')
-                self.code = code_in_string(id, 'AGO')
+                temp = code_in_string(id, 'PRD')
+                self.code = code_in_string(id, 'PRD')
         if self.image:
             self.image_url = self.image.url
         else:

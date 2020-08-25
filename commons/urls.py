@@ -30,6 +30,11 @@ from products.views import (
     MasterProductPriceViewSet
 )
 from storages.views import StorageViewSet
+from areas.views import (
+    AreaViewSet,
+    AreaSalesmanViewSet,
+    AreaAgencyViewSet
+)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -59,6 +64,11 @@ router.register(r'products', ProductViewSet)
 router.register(r'product-types', ProductTypeViewSet)
 router.register(r'product-unit-types', ProductUnitTypeViewSet)
 router.register(r'product-master-prices', MasterProductPriceViewSet)
+
+router.register(r'areas', AreaViewSet)
+router.register(r'area-salesman', AreaSalesmanViewSet)
+router.register(r'area-agency', AreaAgencyViewSet)
+
 
 router.register(r'storages', StorageViewSet)
 

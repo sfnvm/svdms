@@ -101,7 +101,8 @@ class AgreedOrderFilter(filters.FilterSet):
         model = AgreedOrderModel
         fields = {
             'paid': ['exact'],
-            'status': ['exact']
+            'status': ['exact'],
+            'request_order': ['exact']
         }
 
 

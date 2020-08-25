@@ -65,7 +65,6 @@ class RequestOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestOrderModel
         fields = '__all__'
-        depth = 3
         read_only_fields = ['bill_value']
 
     @staticmethod
