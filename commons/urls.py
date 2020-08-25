@@ -108,4 +108,6 @@ urlpatterns = [
     re_path(r'^agreed-orders/$', AgreedOrderViewSet.current_agency),
     re_path(r'^agreed-orders/^(?P<pk>[0-9]+)/$',
             AgreedOrderViewSet.agency_approve)
+    re_path(r'^agreed-orders/^(?P<pk>[0-9]+)/$',
+            AgreedOrderViewSet.agency_reject)
 ]
