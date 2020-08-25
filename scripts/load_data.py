@@ -159,7 +159,7 @@ def run():
         print(row)
         if index == 0:
             continue
-        user_related = User.objects.get(row[5])
+        user_related = User.objects.get(pk=row[5])
         r, created = Agency.objects.update_or_create(
             id=index,
             defaults={
