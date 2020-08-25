@@ -58,8 +58,9 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         source='agency', write_only=True,
         queryset=AgencyModel.objects.order_by('id').filter(removed=False))
 
-    request_order_details = RequestOrderProductDetailsSerializer(source='requestorderproductdetails_set',
-                                                                 many=True, read_only=True)
+    # source='requestorderproductdetails_set'
+    requestorderproductdetails_set = RequestOrderProductDetailsSerializer(
+        many=True, read_only=True)
     details = serializers.JSONField(write_only=True)
 
     class Meta:

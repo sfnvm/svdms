@@ -47,7 +47,7 @@ def get_available_product_quantity(product_id):
     soldSum = 0
     for success_order in current_sold:
         tmp = orders.models.AgreedOrderProductDetails.objects.filter(
-            agreed_order=success_order).aggregate(tmp=Sum('amount'))['tmp'] or 0
+            agreed_order=success_order, product=obj).aggregate(tmp=Sum('amount'))['tmp'] or 0
         if tmp:
             soldSum += tmp
 

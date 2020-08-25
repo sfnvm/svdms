@@ -73,15 +73,19 @@ class ProductSerializer(serializers.ModelSerializer):
         all_input = StorageProductDetailsModel.objects.filter(
             product=obj).aggregate(all_input=Sum('amount'))['all_input'] or 0
 
+        print(all_input)
+
         current_sold = AgreedOrderModel.objects.filter(
             removed=False)
 
         soldSum = 0
         for success_order in current_sold:
             tmp = AgreedOrderProductDetailsModel.objects.filter(
-                agreed_order=success_order).aggregate(tmp=Sum('amount'))['tmp'] or 0
+                agreed_order=success_order, product=obj).aggregate(tmp=Sum('amount'))['tmp'] or 0
             if tmp:
                 soldSum += tmp
+
+        print(all_input)
 
         return all_input - soldSum
 
