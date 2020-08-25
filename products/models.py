@@ -35,6 +35,17 @@ class ProductUnitType(models.Model):
     def __str__(self):
         return self.code
 
+    def save(self, *args, **kwargs):
+        id = ProductUnitType.objects.count() + 1
+        print(self)
+        if not self.code:
+            self.code = code_in_string(id, 'PUT')
+            while ProductUnitType.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'PUT')
+                self.code = code_in_string(id, 'PUT')
+        super(ProductUnitType, self).save()
+
 
 class ProductType(models.Model):
     class Meta:
@@ -54,6 +65,17 @@ class ProductType(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_removed_by"
     )
+
+    def save(self, *args, **kwargs):
+        id = ProductType.objects.count() + 1
+        print(self)
+        if not self.code:
+            self.code = code_in_string(id, 'PRT')
+            while ProductType.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'PRT')
+                self.code = code_in_string(id, 'PRT')
+        super(ProductType, self).save()
 
 
 class Product(models.Model):
@@ -91,12 +113,6 @@ class Product(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True,
         related_name="%(class)s_removed_by"
     )
-
-    # @property
-    # def image_url(self):
-    #     if self.image:
-    #         return self.image.url
-    #     return ''  # or some default
 
     def __str__(self):
         return self.code
@@ -142,3 +158,14 @@ class MasterProductPrice(models.Model):
 
     def __str__(self):
         return self.code
+
+    def save(self, *args, **kwargs):
+        id = MasterProductPrice.objects.count() + 1
+        print(self)
+        if not self.code:
+            self.code = code_in_string(id, 'MPP')
+            while MasterProductPrice.objects.filter(code=self.code).exists():
+                id += 1
+                temp = code_in_string(id, 'MPP')
+                self.code = code_in_string(id, 'MPP')
+        super(MasterProductPrice, self).save()

@@ -65,14 +65,28 @@ class AgreedOrder(models.Model):
     bill_value = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
 
+    STATUS = (
+        (10, 'rejected'),
+        (11, 'approved'),
+        (20, 'agency_rejected'),
+        (21, 'agency_approved'),
+        (33, 'planned_for_delivery'),
+        (44, 'delivered')
+    )
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS, blank=True, null=True)
+
     approved = models.BooleanField(default=False)
     approved_on = models.DateTimeField(blank=True, null=True)
 
     rejected = models.BooleanField(default=False)
     rejected_on = models.DateTimeField(blank=True, null=True)
 
-    accepted = models.BooleanField(default=False)
-    accepted_on = models.DateTimeField(blank=True, null=True)
+    agency_rejected = models.BooleanField(default=False)
+    agency_rejected_on = models.DateTimeField(blank=True, null=True)
+
+    agency_accepted = models.BooleanField(default=False)
+    agency_accepted_on = models.DateTimeField(blank=True, null=True)
 
     planned_for_delivery = models.BooleanField(default=False)
     expected_delivery_on = models.DateTimeField(blank=True, null=True)

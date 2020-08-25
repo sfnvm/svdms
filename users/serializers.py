@@ -44,10 +44,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')
+        # not using it yet
+        password = validated_data.pop('password')
 
         user = super().update(instance, validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
+        # user.set_password(validated_data['password'])
+        # user.save()
 
         profile_instance = ProfileModel.objects.filter(user=user)
 

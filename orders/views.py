@@ -1,6 +1,7 @@
 import logging
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -99,12 +100,8 @@ class AgreedOrderFilter(filters.FilterSet):
     class Meta:
         model = AgreedOrderModel
         fields = {
-            'accepted': ['exact'],
-            'rejected': ['exact'],
-            'approved': ['exact'],
-            'planned_for_delivery': ['exact'],
-            'delivered': ['exact'],
             'paid': ['exact'],
+            'status': ['exact']
         }
 
 
@@ -121,11 +118,17 @@ class AgreedOrderViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
     @action(detail=False)
-    def agreed_order_agency(self, request):
-        print(request)
-        agency_instance = AgencyModel.objects.filter(user_related=request.user)
+    def current_agency(self, request):
+        agency_instance = AgencyModel.objects.filter(
+            user_related=request.user).first()
+        if(not agency_instance):
+            return Response(data={
+                'details': 'permission denied'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         ago_orders = AgreedOrderModel.objects.filter(
-            rejected=False, accepted=False, agency=agency_instance).order_by('created_at')
+            status__isnull=True, agency=agency_instance).order_by('created_at')
+
         page = self.paginate_queryset(ago_orders)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -133,3 +136,63 @@ class AgreedOrderViewSet(ModelViewSet):
 
         serializer = self.get_serializer(ago_orders, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['put'])
+    def paid_confirm(self, request):
+        print(request)
+
+    @action(detail=True, methods=['put'])
+    def agency_approve(self, request, pk=None):
+        agency_instance = AgencyModel.objects.filter(
+            user_related=request.user).first()
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status__isnull=True, agency=agency_instance).order_by('created_at').first()
+
+        if(not ago_order):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        ago_order.agency_accepted = True
+        ago_order.agency_accepted_on = timezone.now()
+        ago_order.status = 11
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['put'])
+    def agency_reject(self, request, pk=None):
+        agency_instance = AgencyModel.objects.filter(
+            user_related=request.user).first()
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status__isnull=True, agency=agency_instance).order_by('created_at').first()
+
+        if(not ago_order):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        ago_order.agency_rejected = True
+        ago_order.agency_rejected_on = timezone.now()
+        ago_order.status = 10
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['put'])
+    def agency_reject(self, request):
+        print(request)
+
+    @action(detail=True, methods=['put'])
+    def approve(self, request):
+        print(request)
+
+    @action(detail=True, methods=['put'])
+    def reject(self, request):
+        print(request)
+
+    @action(detail=True, methods=['put'])
+    def ship_plan(self, request):
+        print(request)
+
+    @action(detail=True, methods=['put'])
+    def delivered(self, request):
+        print(request)

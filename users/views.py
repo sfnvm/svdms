@@ -136,11 +136,17 @@ class UserViewSet(ModelViewSet):
 
     @action(detail=True, methods=['put'])
     def lock_user(self, request, pk=None):
-        print(pk)
         queryset = UserModel.objects.filter(pk=pk)
         queryset.update(is_active=False)
         serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data[0])
+
+    @action(detail=True, methods=['put'])
+    def reactivate(self, request, pk=None):
+        queryset = UserModel.objects.filter(pk=pk)
+        queryset.update(is_active=True)
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data[0])
 
 
 class ProfileViewSet(ModelViewSet):

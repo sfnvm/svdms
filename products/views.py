@@ -34,7 +34,7 @@ class ProductTypeViewSet(ModelViewSet):
         serializer.save(created_by=req.user)
 
 
-class ProductUnitPyteViewSet(ModelViewSet):
+class ProductUnitTypeViewSet(ModelViewSet):
     queryset = ProductUnitTypeModel.objects.all().order_by(
         'id').filter(removed=False)
     serializer_class = ProductUnitTypeSerializer

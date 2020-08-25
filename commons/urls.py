@@ -26,8 +26,9 @@ from orders.views import (
 )
 from products.views import (
     ProductTypeViewSet,
-    ProductUnitPyteViewSet,
-    ProductViewSet
+    ProductUnitTypeViewSet,
+    ProductViewSet,
+    MasterProductPriceViewSet
 )
 from storages.views import StorageViewSet
 
@@ -57,7 +58,8 @@ router.register(r'agreed-orders', AgreedOrderViewSet)
 
 router.register(r'products', ProductViewSet)
 router.register(r'product-types', ProductTypeViewSet)
-router.register(r'product-unit-types', ProductUnitPyteViewSet)
+router.register(r'product-unit-types', ProductUnitTypeViewSet)
+router.register(r'product-master-prices', MasterProductPriceViewSet)
 
 router.register(r'storages', StorageViewSet)
 
@@ -83,6 +85,8 @@ urlpatterns = [
     path('auth/check/', check_token, name='check_token'),
     # Lock user
     re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.lock_user),
+    # Reactivate user
+    re_path(r'users/^(?P<pk>[0-9]+)/$', UserViewSet.reactivate),
     # Confim RQO
     re_path(
         r'request-orders/^(?P<pk>[0-9]+)/$', RequestOrderViewSet.confirm),
@@ -101,5 +105,7 @@ urlpatterns = [
     # Optional Storage endpoints (use APIView to override)
     #
     # Optional Order endpoints (use APIView to override)
-    re_path(r'^agreed-orders/$', AgreedOrderViewSet.agreed_order_agency)
+    re_path(r'^agreed-orders/$', AgreedOrderViewSet.current_agency),
+    re_path(r'^agreed-orders/^(?P<pk>[0-9]+)/$',
+            AgreedOrderViewSet.agency_approve)
 ]
