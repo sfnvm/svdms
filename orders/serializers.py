@@ -208,7 +208,7 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
                 amount_can_provide = detail.amount
             else:
                 amount_can_provide = int(get_available_product_quantity(
-                    detail.product.id) * (detail.amount/(detail.amount + products_current_req[detail.product.id])))
+                    detail.product.id) * (detail.amount/(detail.amount + int(products_current_req.get(detail.product.id) or 0))))
 
             AgreedOrderProductDetailsModel.objects.create(
                 product=detail.product,
