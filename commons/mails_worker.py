@@ -134,9 +134,45 @@ def request_order_confirmed(recepient, code, salesman, phone_number):
     msg.send()
 
 
-def agreed_order_approved(recepient, code, salesman, phone_number):
+def agreed_order_paid():
+    subject = 'THÔNG BÁO ĐƠN HÀNG ĐÃ ĐƯỢC THANH TOÁN THÀNH CÔNG'
+    from_email = EMAIL_HOST_USER
+    to = recepient
+
+    text_content = 'Thông báo đơn hàng đã được thanh toán.'
+    html_content = render_to_string(
+        'email-templates/request-orders/request-order-paid.html',
+        {
+            'code': code,
+            'salesman': salesman,
+            'phone_number': phone_number
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject, text_content, from_email, [to])
+
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 def agreed_order_planted_for_delivery():
-    # sent after manager plan for delivery order
-    pass
+    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT'
+    from_email = EMAIL_HOST_USER
+    to = recepient
+
+    text_content = 'Thông báo yêu cầu đã được phê duyệt.'
+    html_content = render_to_string(
+        'email-templates/request-orders/request-order-confirmed.html',
+        {
+            'code': code,
+            'salesman': salesman,
+            'phone_number': phone_number
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject, text_content, from_email, [to])
+
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
