@@ -155,7 +155,7 @@ class AgreedOrderViewSet(ModelViewSet):
         ago_order.save()
 
         serializer = self.get_serializer(ago_order, many=False)
-        return Response(data={serializer.data})
+        return Response(serializer.data)
 
     @action(detail=True, methods=['put'])
     def agency_accept(self, request, pk=None):
@@ -218,7 +218,7 @@ class AgreedOrderViewSet(ModelViewSet):
         ago_order.save()
 
         serializer = self.get_serializer(ago_order, many=False)
-        return Response(data={serializer.data})
+        return Response(serializer.data)
 
     @action(detail=True, methods=['put'])
     def delivered(self, request, pk=None):
@@ -237,4 +237,4 @@ class AgreedOrderViewSet(ModelViewSet):
         ago_order.save()
 
         serializer = self.get_serializer(ago_order, many=False)
-        return Response(data={serializer.data})
+        return Response(serializer.data)
