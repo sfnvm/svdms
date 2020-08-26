@@ -244,7 +244,7 @@ class AgreedOrderViewSet(ModelViewSet):
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
 
-        if(not ago_order):
+        if(not agency_instance):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         ago_order = AgreedOrderModel.objects.filter(
