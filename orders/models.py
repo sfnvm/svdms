@@ -97,6 +97,10 @@ class AgreedOrder(models.Model):
 
     paid = models.BooleanField(default=False)
     paid_on = models.DateTimeField(blank=True, null=True)
+    confirm_paid_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True,
+        related_name="%(class)s_confirm_paid_by"
+    )
 
     removed = models.BooleanField(default=False)
 

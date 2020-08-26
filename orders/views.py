@@ -139,8 +139,23 @@ class AgreedOrderViewSet(ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=['put'])
-    def paid_confirm(self, request):
-        print(request)
+    def paid_confirm(self, request, pk=None):
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status=11).first()
+
+        if(not ago_order):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                data={"details": "not found"}
+            )
+
+        ago_order.paid = True
+        ago_order.paid_on = timezone.now()
+        ago_order.confirm_paid_by = request.user
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(data={serializer.data})
 
     @action(detail=True, methods=['put'])
     def agency_accept(self, request, pk=None):
@@ -150,7 +165,7 @@ class AgreedOrderViewSet(ModelViewSet):
             pk=pk, status=0, agency=agency_instance).order_by('created_at').first()
 
         if(not ago_order):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         ago_order.agency_accepted = True
         ago_order.agency_accepted_on = timezone.now()
@@ -165,10 +180,10 @@ class AgreedOrderViewSet(ModelViewSet):
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
         ago_order = AgreedOrderModel.objects.filter(
-            pk=pk, status=0, agency=agency_instance).order_by('created_at').first()
+            pk=pk, status=0, agency=agency_instance).first()
 
         if(not ago_order):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         ago_order.agency_rejected = True
         ago_order.agency_rejected_on = timezone.now()
@@ -187,9 +202,39 @@ class AgreedOrderViewSet(ModelViewSet):
         print(request)
 
     @action(detail=True, methods=['put'])
-    def ship_plan(self, request):
-        print(request)
+    def plant_for_delivery(self, request, pk=None):
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status=11).first()
+
+        if(not ago_order):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                data={"details": "not found"}
+            )
+
+        ago_order.planned_for_delivery = True
+        ago_order.expected_delivery_on = request.data['timestamp']
+        ago_order.status = 33
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(data={serializer.data})
 
     @action(detail=True, methods=['put'])
-    def delivered(self, request):
-        print(request)
+    def delivered(self, request, pk=None):
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status=33).first()
+
+        if(not ago_order):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                data={"details": "not found"}
+            )
+
+        ago_order.delivered = True
+        ago_order.delivered_on = request.data['timestamp']
+        ago_order.status = 44
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(data={serializer.data})
