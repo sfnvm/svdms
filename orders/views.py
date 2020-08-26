@@ -232,7 +232,7 @@ class AgreedOrderViewSet(ModelViewSet):
             )
 
         ago_order.delivered = True
-        ago_order.delivered_on = request.data['timestamp']
+        ago_order.delivered_on = timezone.now()
         ago_order.status = 44
         ago_order.save()
 
