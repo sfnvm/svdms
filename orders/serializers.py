@@ -124,7 +124,7 @@ class RequestOrderSerializer(serializers.ModelSerializer):
             self.approving(validated_data['created_by'], request_order)
 
         mails_worker.request_order_success(
-            request_order.agency.user_related.email
+            request_order.agency.user_related.email,
             request_order.code
         )
 
