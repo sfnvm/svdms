@@ -75,10 +75,26 @@ def request_order_success():
     pass
 
 
-def request_order_confirmed():
-    # sent after manager accept request any order
-    # need provide informs of person who accepted the request
-    pass
+def request_order_confirmed(recepient, code, salesman, phone_number):
+    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT'
+    from_email = EMAIL_HOST_USER
+    to = recepient
+
+    text_content = 'Thông báo yêu cầu đã được phê duyệt.'
+    html_content = render_to_string(
+        'email-templates/agreed-orders/agreed-order-confirmed.html',
+        {
+            'code': code,
+            'salesman': salesman,
+            'phone_number': phone_number
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject, text_content, from_email, [to])
+
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 def agreed_order_planted_for_delivery():

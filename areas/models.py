@@ -25,7 +25,6 @@ class Area(models.Model):
 
     def save(self, *args, **kwargs):
         id = Area.objects.count() + 1
-        print(self)
         if not self.code:
             self.code = code_in_string(id, 'ARA')
             while Area.objects.filter(code=self.code).exists():

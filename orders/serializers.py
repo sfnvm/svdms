@@ -19,6 +19,8 @@ from commons.utils import (
     get_current_product_price
 )
 
+from commons import mails_worker
+
 
 class RequestOrderProductDetailsSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
@@ -86,14 +88,20 @@ class RequestOrderSerializer(serializers.ModelSerializer):
             'details': []
         }
         result = AgreedOrderSerializer.create(AgreedOrderSerializer, instance)
-        print(result)
+
+        mails_worker.request_order_confirmed(
+            data.agency.user_related.email,
+            result.code,
+            user.username,
+            user.profile.phone_number
+        )
+
         return data
 
     def rejecting(self):
         pass
 
     def create(self, validated_data):
-        print(validated_data)
         request_order_data = validated_data.pop('details')
 
         # Validated amount
@@ -146,7 +154,6 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         result = RequestOrderModel.objects.filter(id=instance.id).first()
 
         if result.approved:
-            print(validated_data)
             self.approving(validated_data['created_by'], result)
 
         return result
@@ -178,7 +185,6 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
         read_only_fields = ['bill_value']
 
     def create(self, validated_data):
-        print(validated_data)
         agreed_order_data = validated_data.pop('details')
         agreed_order = AgreedOrderModel.objects.create(agency=validated_data['request_order'].agency,
                                                        ** validated_data)
@@ -200,7 +206,6 @@ class AgreedOrderSerializer(serializers.ModelSerializer):
 
         request_order_details = RequestOrderProductDetailsModel.objects.filter(
             request_order=validated_data['request_order'])
-        print(products_current_req)
 
         for detail in request_order_details:
             amount_can_provide = 0

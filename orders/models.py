@@ -66,15 +66,16 @@ class AgreedOrder(models.Model):
         max_digits=20, decimal_places=2, default=0)
 
     STATUS = (
-        (10, 'rejected'),
-        (11, 'approved'),
-        (20, 'agency_rejected'),
-        (21, 'agency_approved'),
+        (00, 'wait_agency'),
+        (10, 'agency_rejected'),
+        (11, 'agency_approved'),
+        (20, 'rejected'),
+        (21, 'approved'),
         (33, 'planned_for_delivery'),
         (44, 'delivered')
     )
     status = models.PositiveSmallIntegerField(
-        choices=STATUS, blank=True, null=True)
+        choices=STATUS, blank=True, default=00, null=False)
 
     approved = models.BooleanField(default=False)
     approved_on = models.DateTimeField(blank=True, null=True)

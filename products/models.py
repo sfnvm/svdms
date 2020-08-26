@@ -37,7 +37,6 @@ class ProductUnitType(models.Model):
 
     def save(self, *args, **kwargs):
         id = ProductUnitType.objects.count() + 1
-        print(self)
         if not self.code:
             self.code = code_in_string(id, 'PUT')
             while ProductUnitType.objects.filter(code=self.code).exists():
@@ -69,7 +68,6 @@ class ProductType(models.Model):
 
     def save(self, *args, **kwargs):
         id = ProductType.objects.count() + 1
-        print(self)
         if not self.code:
             self.code = code_in_string(id, 'PRT')
             while ProductType.objects.filter(code=self.code).exists():
@@ -120,7 +118,6 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         id = Product.objects.count() + 1
-        print(self)
         if not self.code:
             self.code = code_in_string(id, 'PRD')
             while Product.objects.filter(code=self.code).exists():
@@ -162,7 +159,6 @@ class MasterProductPrice(models.Model):
 
     def save(self, *args, **kwargs):
         id = MasterProductPrice.objects.count() + 1
-        print(self)
         if not self.code:
             self.code = code_in_string(id, 'MPP')
             while MasterProductPrice.objects.filter(code=self.code).exists():

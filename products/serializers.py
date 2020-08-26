@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Sum
+from datetime import date
 
 from products.models import (
     Product as ProductModel,
@@ -73,8 +74,6 @@ class ProductSerializer(serializers.ModelSerializer):
         all_input = StorageProductDetailsModel.objects.filter(
             product=obj).aggregate(all_input=Sum('amount'))['all_input'] or 0
 
-        print(all_input)
-
         current_sold = AgreedOrderModel.objects.filter(
             removed=False)
 
@@ -84,8 +83,6 @@ class ProductSerializer(serializers.ModelSerializer):
                 agreed_order=success_order, product=obj).aggregate(tmp=Sum('amount'))['tmp'] or 0
             if tmp:
                 soldSum += tmp
-
-        print(all_input)
 
         return all_input - soldSum
 

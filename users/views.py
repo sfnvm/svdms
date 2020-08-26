@@ -82,7 +82,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
         )
         token = Token.objects.get(key=response.data['token'])
         # serialized_obj = serializers.serialize('json', token.user)
-        # print(serialized_obj)
 
         # addition infor for agency login
         user_instance = token.user
