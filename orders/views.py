@@ -160,8 +160,7 @@ class AgreedOrderViewSet(ModelViewSet):
 
     @action(detail=True, methods=['put'])
     def paid_confirm(self, request, pk=None):
-        ago_order = AgreedOrderModel.objects.filter(
-            pk=pk, status=11).first()
+        ago_order = AgreedOrderModel.objects.filter(pk=pk).first()
 
         if(not ago_order):
             return Response(
