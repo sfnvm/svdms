@@ -1,4 +1,6 @@
 import logging
+import datetime
+
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -29,6 +31,8 @@ from orders.serializers import (
     AgreedOrderSerializer,
     AgreedOrderProductDetailsSerializer
 )
+
+from commons import mails_worker
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -80,6 +84,14 @@ class RequestOrderViewSet(ModelViewSet):
             queryset = RequestOrderModel.objects.filter(pk=pk)
             serializer = RequestOrderSerializer(queryset)
             result = serializer.approving(request.user, queryset.first())
+
+            mails_worker.request_order_confirmed(
+                req_order.agency.user_related.email,
+                req_order.code,
+                request.user,
+                request.user.profile.phone_number
+            )
+
             return Response(RequestOrderSerializer(result).data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -93,6 +105,14 @@ class RequestOrderViewSet(ModelViewSet):
             req_order.rejected = True
             req_order.save()
             queryset = RequestOrderModel.objects.filter(pk=pk).first()
+
+            mails_worker.request_order_rejected(
+                req_order.agency.user_related.email,
+                req_order.code,
+                request.user,
+                request.user.profile.phone_number
+            )
+
             return Response(RequestOrderSerializer(queryset).data)
 
 
@@ -155,6 +175,13 @@ class AgreedOrderViewSet(ModelViewSet):
         ago_order.save()
 
         serializer = self.get_serializer(ago_order, many=False)
+
+        mails_worker.agreed_order_paid(
+            ago_order.agency.user_related.email,
+            ago_order.code,
+            request.user
+        )
+
         return Response(serializer.data)
 
     @action(detail=True, methods=['put'])
@@ -218,6 +245,13 @@ class AgreedOrderViewSet(ModelViewSet):
         ago_order.save()
 
         serializer = self.get_serializer(ago_order, many=False)
+
+        mails_worker.agreed_order_planted_for_delivery(
+            ago_order.agency.user_related.email,
+            ago_order.code,
+            request.data['timestamp']
+        )
+
         return Response(serializer.data)
 
     @action(detail=True, methods=['put'])

@@ -89,12 +89,12 @@ class RequestOrderSerializer(serializers.ModelSerializer):
         }
         result = AgreedOrderSerializer.create(AgreedOrderSerializer, instance)
 
-        mails_worker.request_order_confirmed(
-            data.agency.user_related.email,
-            result.code,
-            user.username,
-            user.profile.phone_number
-        )
+        # mails_worker.request_order_confirmed(
+        #     data.agency.user_related.email,
+        #     result.code,
+        #     user.username,
+        #     user.profile.phone_number
+        # )
 
         return data
 
@@ -122,6 +122,11 @@ class RequestOrderSerializer(serializers.ModelSerializer):
 
         if request_order.approved:
             self.approving(validated_data['created_by'], request_order)
+
+        mails_worker.request_order_success(
+            request_order.agency.user_related.email
+            request_order.code
+        )
 
         return request_order
 
