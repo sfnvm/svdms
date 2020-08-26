@@ -128,7 +128,7 @@ class AgreedOrderViewSet(ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         ago_orders = AgreedOrderModel.objects.filter(
-            status__isnull=True, agency=agency_instance).order_by('created_at')
+            status=0, agency=agency_instance).order_by('created_at')
 
         page = self.paginate_queryset(ago_orders)
         if page is not None:
@@ -147,7 +147,7 @@ class AgreedOrderViewSet(ModelViewSet):
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
         ago_order = AgreedOrderModel.objects.filter(
-            pk=pk, status__isnull=True, agency=agency_instance).order_by('created_at').first()
+            pk=pk, status=0, agency=agency_instance).order_by('created_at').first()
 
         if(not ago_order):
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -165,7 +165,7 @@ class AgreedOrderViewSet(ModelViewSet):
         agency_instance = AgencyModel.objects.filter(
             user_related=request.user).first()
         ago_order = AgreedOrderModel.objects.filter(
-            pk=pk, status__isnull=True, agency=agency_instance).order_by('created_at').first()
+            pk=pk, status=0, agency=agency_instance).order_by('created_at').first()
 
         if(not ago_order):
             return Response(status=status.HTTP_400_BAD_REQUEST)
