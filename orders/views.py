@@ -238,3 +238,28 @@ class AgreedOrderViewSet(ModelViewSet):
 
         serializer = self.get_serializer(ago_order, many=False)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['put'])
+    def agency_delivered(self, request, pk=None):
+        agency_instance = AgencyModel.objects.filter(
+            user_related=request.user).first()
+
+        if(not ago_order):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        ago_order = AgreedOrderModel.objects.filter(
+            pk=pk, status=33, agency=agency_instance).first()
+
+        if(not ago_order):
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                data={"details": "not found"}
+            )
+
+        ago_order.delivered = True
+        ago_order.delivered_on = timezone.now()
+        ago_order.status = 44
+        ago_order.save()
+
+        serializer = self.get_serializer(ago_order, many=False)
+        return Response(serializer.data)

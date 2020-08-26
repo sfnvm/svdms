@@ -70,19 +70,34 @@ def reset_password():
     pass
 
 
-def request_order_success():
-    # sent after agency or manager create a request order, directly to agency's email
-    pass
-
-
-def request_order_confirmed(recepient, code, salesman, phone_number):
-    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT'
+def request_order_success(recepient, code):
+    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ ĐƯỢC HỆ THỐNG GHI NHẬN'
     from_email = EMAIL_HOST_USER
     to = recepient
 
-    text_content = 'Thông báo yêu cầu đã được phê duyệt.'
+    text_content = 'Thông báo yêu cầu đã được ghi nhận.'
     html_content = render_to_string(
-        'email-templates/agreed-orders/agreed-order-confirmed.html',
+        'email-templates/request-orders/request-order-success.html',
+        {
+            'code': code
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject, text_content, from_email, [to])
+
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+
+def request_order_rejected(recepient, code, salesman, phone_number):
+    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ BỊ TỪ CHỐI'
+    from_email = EMAIL_HOST_USER
+    to = recepient
+
+    text_content = 'Thông báo yêu cầu đã bị từ chối.'
+    html_content = render_to_string(
+        'email-templates/request-orders/request-order-rejected.html',
         {
             'code': code,
             'salesman': salesman,
@@ -95,6 +110,31 @@ def request_order_confirmed(recepient, code, salesman, phone_number):
 
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+
+def request_order_confirmed(recepient, code, salesman, phone_number):
+    subject = 'THÔNG BÁO ĐƠN HÀNG YÊU CẦU ĐÃ ĐƯỢC PHÊ DUYỆT'
+    from_email = EMAIL_HOST_USER
+    to = recepient
+
+    text_content = 'Thông báo yêu cầu đã được phê duyệt.'
+    html_content = render_to_string(
+        'email-templates/request-orders/request-order-confirmed.html',
+        {
+            'code': code,
+            'salesman': salesman,
+            'phone_number': phone_number
+        }
+    )
+
+    msg = EmailMultiAlternatives(
+        subject, text_content, from_email, [to])
+
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+
+def agreed_order_approved(recepient, code, salesman, phone_number):
 
 
 def agreed_order_planted_for_delivery():
